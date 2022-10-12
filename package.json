@@ -1,0 +1,19 @@
+{
+  "name": "shell-alias",
+  "version": "1.0.0",
+  "scripts": {
+    "lint-code": "eslint \"**/*.js\""
+  },
+  "private": true,
+  "dependencies": {},
+  "devDependencies": {
+    "@types/node": "^18.8.4",
+    "eslint": "^8.25.0",
+    "eslint-config-standard": "^17.0.0",
+    "eslint-plugin-import": "^2.25.2",
+    "eslint-plugin-n": "^15.0.0",
+    "eslint-plugin-promise": "^6.0.0",
+    "eslint-plugin-sort-keys-shorthand": "^2.2.0",
+    "eslint-plugin-unicorn": "^44.0.2"
+  }
+}

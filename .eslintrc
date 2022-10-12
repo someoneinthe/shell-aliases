@@ -1,0 +1,60 @@
+{
+  "env": {
+    "browser": true,
+    "commonjs": true,
+    "es2021": true,
+    "node": true
+  },
+  "extends": [
+    "eslint:recommended",
+    "plugin:unicorn/recommended"
+  ],
+  "ignorePatterns": [
+    "node_modules/"
+  ],
+  "parserOptions": {
+    "ecmaVersion": "latest"
+  },
+  "plugins": [
+    "sort-keys-shorthand",
+    "unicorn"
+  ],
+  "reportUnusedDisableDirectives": true,
+  "root": true,
+  "rules": {
+    "arrow-body-style": [
+      "error",
+      "as-needed"
+    ],
+    "arrow-parens": [
+      "error",
+      "as-needed"
+    ],
+    "comma-dangle": [
+      "error",
+      "always-multiline"
+    ],
+    "indent": [
+      "warn",
+      2
+    ],
+    "no-trailing-spaces": "error",
+    "no-useless-concat": "error",
+    "prefer-template": "error",
+    "sort-keys-shorthand/sort-keys-shorthand": [
+      "error",
+      "asc",
+      {
+        "caseSensitive": false,
+        "natural": true,
+        "minKeys": 2,
+        "shorthand": "first"
+      }
+    ],
+    "unicorn/explicit-length-check": "off",
+    "unicorn/no-array-for-each": "off",
+    "unicorn/no-array-reduce": "warn",
+    "unicorn/no-unreadable-array-destructuring": "off",
+    "unicorn/prefer-module": "off"
+  }
+}
