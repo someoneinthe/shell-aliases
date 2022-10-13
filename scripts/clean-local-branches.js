@@ -5,10 +5,10 @@ const {colorize, colorKeys} = require('./helpers/colors');
 
 const getLocalRemovedBranches = () => {
   try {
-    return execSync('git fetch -p && git branch -vv | grep \'origin/.*: gone]\'').toString()
+    return execSync('git fetch -p && git branch -vv').toString()
   } catch {
-    console.log(colorize('Can\'t fetch remotes branches.', colorKeys.red));
-    return '';
+    console.log(colorize('Can\'t fetch remotes branches', colorKeys.red));
+    process.exit(1);
   }
 }
 
@@ -18,7 +18,7 @@ const getCurrentBranchName = () => {
   } catch {
     console.log(colorize('Can\'t get current branch.', colorKeys.red));
 
-    return '';
+    process.exit(1);
   }
 }
 
@@ -26,6 +26,7 @@ const currentBranch = getCurrentBranchName();
 
 getLocalRemovedBranches()
   .split('\n')
+  .filter(rawLine => rawLine.includes(': gone]'))
   .map(line => line.trim().replace(/\s.*/, ''))
   .filter(branchName => !!branchName && branchName !== currentBranch)
   .forEach(branchName => {
@@ -34,4 +35,4 @@ getLocalRemovedBranches()
     console.log(execSync(`git branch -d -f ${branchName}`).toString());
   });
 
-console.log('finished, everything is clean');
+console.log(colorize('Finished, everything is clean', colorKeys.green));
