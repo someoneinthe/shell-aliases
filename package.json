@@ -2,7 +2,7 @@
   "name": "shell-alias",
   "version": "1.0.0",
   "scripts": {
-    "lint-code": "eslint \"**/*.js\""
+    "lint-code": "eslint \"**/*.{js,mjs}\""
   },
   "private": true,
   "dependencies": {},

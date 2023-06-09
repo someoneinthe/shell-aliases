@@ -24,3 +24,6 @@ jspm_packages/
 
 # intelliJ files
 .idea/
+
+# MacOs files
+.DS_Store
