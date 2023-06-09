@@ -5,15 +5,17 @@
     "lint-code": "eslint \"**/*.{js,mjs}\""
   },
   "private": true,
-  "dependencies": {},
   "devDependencies": {
-    "@types/node": "^18.8.4",
+    "@types/node": "^18.16.16",
     "eslint": "^8.25.0",
-    "eslint-config-standard": "^17.0.0",
-    "eslint-plugin-import": "^2.25.2",
-    "eslint-plugin-n": "^15.0.0",
+    "eslint-config-standard": "^17.1.0",
+    "eslint-plugin-import": "^2.27.5",
+    "eslint-plugin-n": "^16.0.0",
     "eslint-plugin-promise": "^6.0.0",
     "eslint-plugin-sort-keys-shorthand": "^2.2.0",
-    "eslint-plugin-unicorn": "^44.0.2"
+    "eslint-plugin-unicorn": "^47.0.0"
+  },
+  "engines": {
+    "node": ">=18"
   }
 }

@@ -1,12 +1,12 @@
 {
   "env": {
-    "browser": true,
     "commonjs": true,
     "es2021": true,
     "node": true
   },
   "extends": [
     "eslint:recommended",
+    "plugin:n/recommended",
     "plugin:unicorn/recommended"
   ],
   "ignorePatterns": [
@@ -38,6 +38,8 @@
       "warn",
       2
     ],
+    "n/no-process-exit": "off",
+    "n/shebang": "off",
     "no-trailing-spaces": "error",
     "no-useless-concat": "error",
     "prefer-template": "error",
