@@ -137,7 +137,7 @@ const getFullLog = (formattedCommitsList, version) => `
 Here is the changelog for this new version:
 ${formattedCommitsList.join('\n')}
   1. :unlock: Login: https://preprod.supermood.co/auth/sso/saml20?sk=supermood-fr
-  2. :rocket: Test: https://v${version}-dot-preprod-supermood.appspot.com/auth/domain-switch/go
+  2. :rocket: Test: https://v${version.replace('.', '-')}-dot-preprod-supermood.appspot.com/auth/domain-switch/go
 
   Please react with :heavy_check_mark: or :x: after testing your own commits.
 `;
