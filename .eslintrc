@@ -56,7 +56,8 @@
     "unicorn/explicit-length-check": "off",
     "unicorn/no-array-for-each": "off",
     "unicorn/no-array-reduce": "warn",
+    "unicorn/no-process-exit": "off",
     "unicorn/no-unreadable-array-destructuring": "off",
-    "unicorn/prefer-module": "off"
+    "unicorn/prefer-module": "error"
   }
 }

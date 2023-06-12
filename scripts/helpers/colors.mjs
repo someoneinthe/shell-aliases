@@ -1,4 +1,4 @@
-const colorKeys = {
+export const colorKeys = {
   default: 'default',
   green: 'green',
   red: 'red',
@@ -14,13 +14,8 @@ const colors = {
   [colorKeys.yellow]: '\u001B[0;93m',
 }
 
-const colorize = (message, color = colorKeys.default) => {
+export const colorize = (message, color = colorKeys.default) => {
   const colorToDisplay = colors[color] ?? colors.default;
 
   return `${colorToDisplay}${message}${colors.default}`;
-}
-
-module.exports = {
-  colorize,
-  colorKeys,
 }

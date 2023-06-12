@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 
 import {spawn, execSync} from 'node:child_process';
-import {colorize, colorKeys} from "../helpers/colors.js";
+import {colorize, colorKeys} from "../helpers/colors.mjs";
 
 // Check 1.1234.12a tag format
 const gitTagFormat = /^\d\.\d{3,4}\.\d{1,2}\w?/i;
@@ -151,7 +151,7 @@ const copyToClipboard = text => {
   let child;
 
   try {
-    // for mac users only.
+    // for Mac users only.
     child = spawn('pbcopy');
   } catch {
     try {
@@ -159,7 +159,7 @@ const copyToClipboard = text => {
       child = spawn('xclip');
     } catch {
       try {
-        // for windows users only.
+        // for Windows users only.
         child = spawn('clip');
       } catch {
         console.info(colorize('⚠️  Could not copy to clipboard, please copy the changelog manually', colorKeys.yellow));

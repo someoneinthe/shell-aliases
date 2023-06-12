@@ -2,7 +2,8 @@
   "name": "shell-alias",
   "version": "1.0.0",
   "scripts": {
-    "lint-code": "eslint \"**/*.{js,mjs}\""
+    "lint-code": "eslint \"**/*.{js,mjs}\"",
+    "prepare": "husky install"
   },
   "private": true,
   "devDependencies": {
@@ -13,7 +14,8 @@
     "eslint-plugin-n": "^16.0.0",
     "eslint-plugin-promise": "^6.0.0",
     "eslint-plugin-sort-keys-shorthand": "^2.2.0",
-    "eslint-plugin-unicorn": "^47.0.0"
+    "eslint-plugin-unicorn": "^47.0.0",
+    "husky": "^8.0.3"
   },
   "engines": {
     "node": ">=18"

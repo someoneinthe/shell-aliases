@@ -15,10 +15,5 @@ source $SHELL_ALIAS_DIR/.source.sh
 
 ```bash
 SHELL_ALIAS_DIR=$PATH_TO_REPOSITORY
-alias myAliasName='node $SHELL_ALIAS_DIR/scripts/my-file-to-run.js'
+alias myAliasName='node $SHELL_ALIAS_DIR/scripts/my-file-to-run.mjs'
 ```
-
-## TODO list
-
-- add colors to shell output
-- convert js to mjs
