@@ -49,3 +49,11 @@ export const getCurrentBranchName = () => {
     process.exit(1);
   }
 }
+
+export const getTagsList = () => {
+  fetchBranches();
+
+  return execSync('git tag').toString()
+    .split('\n')
+    .filter(Boolean);
+}
