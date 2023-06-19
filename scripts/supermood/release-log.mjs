@@ -19,7 +19,7 @@ const getCleanArguments = () => {
     const [argumentName, argumentValue] = argument.split('=');
     cleanArguments[argumentName] = argumentValue;
   });
-  console.log(cleanArguments)
+
   return cleanArguments;
 };
 
@@ -39,8 +39,8 @@ const getTagsToCompare = () => {
   // we need to search within tags list to get last 2 tags
   else if (!from && !to) {
     console.info(colorize('ℹ️  You didn\'t provide a tag range, we will use the last 2 tags to generate the changelog', colorKeys.yellow));
-    // get last 10 tags (more than we need to be sure to exclude test tags)
-    const lastTagsList = execSync(`git tag --sort=committerdate | tail -10`).toString()
+    // get last 20 tags (more than we need to be sure to exclude test tags)
+    const lastTagsList = execSync(`git tag --sort=committerdate | tail -20`).toString()
       .split('\n')
       .filter(currentTag => currentTag?.match(gitTagFormat));
 
@@ -136,6 +136,7 @@ const getFullLog = (formattedCommitsList, version) => `
 *Supermood version ${version} is now released!* :tada:
 Here is the changelog for this new version:
 ${formattedCommitsList.join('\n')}
+
   1. :unlock: Login: https://preprod.supermood.co/auth/sso/saml20?sk=supermood-fr
   2. :rocket: Test: https://v${version.replace('.', '-')}-dot-preprod-supermood.appspot.com/auth/domain-switch/go
 
