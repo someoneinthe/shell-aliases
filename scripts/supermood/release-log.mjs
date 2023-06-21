@@ -132,8 +132,7 @@ const formatCommits = commitsList => {
  * @param {string} version - version to display
  * @returns {string} - full changelog message
  */
-const getFullLog = (formattedCommitsList, version) => `
-*Supermood version ${version} is now released!* :tada:
+const getFullLog = (formattedCommitsList, version) => `*Supermood version ${version} is now released!* :tada:
 Here is the changelog for this new version:
 ${formattedCommitsList.join('\n')}
 
