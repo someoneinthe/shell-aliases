@@ -14,7 +14,7 @@ export const getLocalBranches = () => {
   fetchBranches();
 
   try {
-    return execSync('git branch -r').toString()
+    return execSync('git branch -r').toString().trim()
   } catch {
     console.log(colorize('❗️ Can\'t fetch remotes branches.', colorKeys.red));
     process.exit(1);
@@ -33,7 +33,7 @@ export const getLocalRemovedBranches = () => {
   fetchBranches();
 
   try {
-    return execSync('git branch -vv').toString()
+    return execSync('git branch -vv').toString().trim()
   } catch {
     console.log(colorize('❗️ Can\'t fetch remotes branches', colorKeys.red));
     process.exit(1);
@@ -42,7 +42,7 @@ export const getLocalRemovedBranches = () => {
 
 export const getCurrentBranchName = () => {
   try {
-    return execSync('git rev-parse --abbrev-ref HEAD').toString()
+    return execSync('git rev-parse --abbrev-ref HEAD').toString().trim()
   } catch {
     console.log(colorize('❗️ Can\'t get current branch.', colorKeys.red));
 
@@ -53,7 +53,7 @@ export const getCurrentBranchName = () => {
 export const getTagsList = () => {
   fetchBranches();
 
-  return execSync('git tag').toString()
+  return execSync('git tag').toString().trim()
     .split('\n')
     .filter(Boolean);
 }

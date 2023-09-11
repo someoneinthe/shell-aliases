@@ -9,12 +9,15 @@ const currentBranch = getCurrentBranchName();
 getLocalRemovedBranches()
   .split('\n')
   .filter(rawLine => rawLine.includes(': gone]'))
-  .map(line => line.trim().replace(/\s.*/, ''))
-  .filter(branchName => !!branchName && branchName !== currentBranch)
+  // trim, remove the '*' selector for current branch, and return the branch name
+  .map(line => line.trim().replace(/^\*\s+/, '').replace(/\s.*/, ''))
+  .filter(branchName => !!branchName)
   .forEach(branchName => {
-    branchName === currentBranch && console.log(colorize('⚠️ Your current branch as gone. Switch another branch to remove it', colorKeys.yellow));
-
-    console.log(execSync(`git branch -d -f ${branchName}`).toString());
+    if (branchName === currentBranch) {
+      console.log(colorize('⚠️ Your current branch as gone. Switch to another branch to remove it', colorKeys.yellow))
+    } else {
+      console.log(execSync(`git branch -d -f ${branchName}`).toString());
+    }
   });
 
 console.log(colorize('🎉 Finished, everything is clean', colorKeys.green));
