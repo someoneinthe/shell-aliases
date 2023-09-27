@@ -113,7 +113,8 @@ const formatCommits = commitsList => {
     const regex = /^\w+/g;
     const [commitPrefix] = currentTag.match(regex);
     const cleanCommitPrefix = commitPrefix.toLowerCase();
-    const cleanCurrentTag = cleanCommitPrefix === 'lokalise' ? currentTag.replace(' @Robin Nicollet', '') : currentTag
+    const cleanLokaliseOnCurrentTag = cleanCommitPrefix === 'lokalise' ? currentTag.replace(' @Robin Nicollet', '') : currentTag;
+    const cleanCurrentTag = cleanLokaliseOnCurrentTag.replace(/\(#(\d+)\)/, '[(#$1)](https://github.com/Supermood/main-app/pull/$1)');
     const currentTagFormatted = `> ${getCommitPrefix(cleanCommitPrefix)} ${cleanCurrentTag}`;
 
     categorisedTags[cleanCommitPrefix] ? categorisedTags[cleanCommitPrefix].push(currentTagFormatted) : categorisedTags[cleanCommitPrefix] = [currentTagFormatted];
