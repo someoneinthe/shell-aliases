@@ -2,12 +2,12 @@
   "name": "shell-alias",
   "version": "1.0.0",
   "scripts": {
-    "lint-code": "eslint \"**/*.{js,mjs}\"",
+    "lint-code": "eslint \"**/*.mjs\"",
     "prepare": "husky install"
   },
   "private": true,
   "devDependencies": {
-    "@types/node": "^18.16.16",
+    "@types/node": "^20.x",
     "eslint": "^8.25.0",
     "eslint-config-standard": "^17.1.0",
     "eslint-plugin-import": "^2.27.5",
@@ -15,9 +15,10 @@
     "eslint-plugin-promise": "^6.0.0",
     "eslint-plugin-sort-keys-shorthand": "^2.2.0",
     "eslint-plugin-unicorn": "^47.0.0",
-    "husky": "^8.0.3"
+    "husky": "^8.0.3",
+    "prompt-sync": "^4.2.0"
   },
   "engines": {
-    "node": ">=18"
+    "node": ">=20"
   }
 }

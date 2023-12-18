@@ -1,7 +1,8 @@
 #!/usr/bin/env node
 
-import {spawn, execSync} from 'node:child_process';
-import {colorize, colorKeys} from "../helpers/colors.mjs";
+import {execSync} from 'node:child_process';
+import {copyToClipboard} from '../helpers/clipboard.mjs';
+import {colorize, colorKeys} from '../helpers/colors.mjs';
 
 // Check 1.1234.12a tag format
 const gitTagFormat = /^\d\.\d{3,4}\.\d{1,2}\w?/i;
@@ -34,7 +35,7 @@ const getTagsToCompare = () => {
   // from & to are url provided
   if (!!from && !!to) {
     console.info(colorize('ℹ️  You provided a tag range, we will use it to generate the changelog', colorKeys.yellow));
-    return {from, to}
+    return {from, to};
   }
   // we need to search within tags list to get last 2 tags
   else if (!from && !to) {
@@ -47,11 +48,12 @@ const getTagsToCompare = () => {
     const [from, to] = lastTagsList.slice(-2);
 
     return {from, to};
-  } else {
+  }
+  else {
     console.error(colorize('❌ Please provide a valid tag range', colorKeys.red));
     process.exit(1);
   }
-}
+};
 
 /**
  * @description Get commits list from git log between two tags
@@ -106,25 +108,29 @@ const formatCommits = commitsList => {
     style: [],
     lokalise: [],
     /* eslint-enable */
-  }
+  };
 
   // order commits by category
   commitsList.forEach(currentTag => {
     const regex = /^\w+/g;
     const [commitPrefix] = currentTag.match(regex);
     const cleanCommitPrefix = commitPrefix.toLowerCase();
-    const cleanLokaliseOnCurrentTag = cleanCommitPrefix === 'lokalise' ? currentTag.replace(' @Robin Nicollet', '') : currentTag;
+    const cleanLokaliseOnCurrentTag = cleanCommitPrefix === 'lokalise'
+      ? currentTag.replace(' @Robin Nicollet', '')
+      : currentTag;
     const cleanCurrentTag = cleanLokaliseOnCurrentTag.replace(/\(#(\d+)\)/, '[(#$1)](https://github.com/Supermood/main-app/pull/$1)');
     const currentTagFormatted = `> ${getCommitPrefix(cleanCommitPrefix)} ${cleanCurrentTag}`;
 
-    categorisedTags[cleanCommitPrefix] ? categorisedTags[cleanCommitPrefix].push(currentTagFormatted) : categorisedTags[cleanCommitPrefix] = [currentTagFormatted];
+    categorisedTags[cleanCommitPrefix]
+      ? categorisedTags[cleanCommitPrefix].push(currentTagFormatted)
+      : categorisedTags[cleanCommitPrefix] = [currentTagFormatted];
   });
 
   // remove empty categories, and join each category with a line break
   return Object.values(categorisedTags)
     .filter(value => !!value.length)
     .map(valueList => valueList.join('\n'));
-}
+};
 
 /**
  * @description Get full changelog message
@@ -143,43 +149,15 @@ ${formattedCommitsList.join('\n')}
   Please react with :heavy_check_mark: or :x: after testing your own commits.
 `;
 
-/**
- * @description Copy message to clipboard
- *
- * @param {string} text - text to copy
- */
-const copyToClipboard = text => {
-  let child;
-
-  try {
-    // for Mac users only.
-    child = spawn('pbcopy');
-  } catch {
-    try {
-      // for linux users only.
-      child = spawn('xclip');
-    } catch {
-      try {
-        // for Windows users only.
-        child = spawn('clip');
-      } catch {
-        console.info(colorize('⚠️  Could not copy to clipboard, please copy the changelog manually', colorKeys.yellow));
-      }
-    }
-  }
-
-  child.stdin.write(text);
-  child.stdin.end();
-
-  console.info(colorize('✅ Changelog copied to clipboard', colorKeys.green));
-};
-
 const {from, to} = getTagsToCompare();
 const tagsList = getCommitsList({from, to});
 const formattedTags = formatCommits(tagsList);
 const fullMessage = getFullLog(formattedTags, to);
 
-copyToClipboard(fullMessage);
-console.log(fullMessage)
+if (copyToClipboard(fullMessage)) {
+  console.info(colorize('✅ Changelog copied to clipboard', colorKeys.green));
+}
+
+console.log(fullMessage);
 
 process.exit(0);

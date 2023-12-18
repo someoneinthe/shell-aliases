@@ -1,11 +1,28 @@
-import {execSync} from 'node:child_process';
-import {getTagsList} from "./helpers/git.mjs";
-import {colorize, colorKeys} from "./helpers/colors.mjs";
+#!/usr/bin/env node
 
-console.warn('ℹ️  Clean tags');
+import {execSync} from 'node:child_process';
+import {copyToClipboard} from './helpers/clipboard.mjs';
+import {getTagsList} from './helpers/git.mjs';
+import {colorize, colorKeys} from './helpers/colors.mjs';
+import promptSync from 'prompt-sync';
+
+const [, , dryMode] = process.argv;
+const isDryMode = ['--dry', 'true', true].includes(dryMode);
+const prompt = promptSync({sigint: true});
 
 // Check 1.1234.12a tag format
 const gitTagFormat = /^\d\.\d{1,4}\.\d{1,2}\w?/i;
+
+if(isDryMode) {
+  console.log(colorize('⚠️  You are running the script in dry mode. This won\'t erase any tag, just list the tags to be removed', colorKeys.yellow));
+
+  prompt('Press RETURN to continue', {echo: ''});
+}
+else {
+  console.log(colorize('❗️ You didn\'t provide dry mode argument. Tags will be removed', colorKeys.red));
+
+  prompt('Are you sure you want to proceed? (y)') !== 'y' && process.exit(0);
+}
 
 const orderTags = tagsList => tagsList.reduce((accumulator, currentTag) => {
   const isVersionTag = currentTag.match(gitTagFormat);
@@ -25,7 +42,7 @@ const removeTagsWithBatch = (tagsList, batchSize = 10) => {
     const tagsToRemoveBatches = [];
     let currentBatchTagsLists = [];
 
-    // tagsList is splitted in batches
+    // tagsList is split in batches
     tagsList.forEach((tagName, index) => {
       // push current tags into batch
       currentBatchTagsLists.push(tagName);
@@ -57,5 +74,18 @@ const removeTagsWithBatch = (tagsList, batchSize = 10) => {
 };
 
 const orderedTags = orderTags(getTagsList());
-removeTagsWithBatch(orderedTags.otherTags, 50)
+
+if(isDryMode) {
+  console.info(colorize(`ℹ️  ${orderedTags.otherTags.length} tags to be removed`, colorKeys.yellow));
+
+  if (copyToClipboard(orderedTags.otherTags.join('\n'))) {
+    console.info(colorize('✅ Tags list copied to clipboard', colorKeys.green));
+  }
+}
+else {
+  console.warn('ℹ️  Clean tags');
+
+  removeTagsWithBatch(orderedTags.otherTags, 50)
+}
+
 process.exit(0);
