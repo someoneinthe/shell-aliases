@@ -14,7 +14,7 @@ getLocalRemovedBranches()
   .filter(branchName => !!branchName)
   .forEach(branchName => {
     if (branchName === currentBranch) {
-      console.log(colorize('⚠️ Your current branch as gone. Switch to another branch to remove it', colorKeys.yellow))
+      console.log(colorize('⚠️  Your current branch has gone. Switch to another branch to remove it', colorKeys.yellow))
     } else {
       console.log(execSync(`git branch -d -f ${branchName}`).toString());
     }

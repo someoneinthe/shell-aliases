@@ -22,6 +22,8 @@ export const getLocalBranches = () => {
 }
 
 export const switchLocalBranch = branchToSwitch => {
+  fetchBranches();
+
   try {
     return execSync(`git switch ${branchToSwitch}`);
   } catch {

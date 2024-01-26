@@ -63,7 +63,12 @@ const removeTagsWithBatch = (tagsList, batchSize = 10) => {
     // proceed deletion
     tagsToRemoveBatches.forEach((batch, index) => {
       console.info(`Removing batch ${index + 1} of ${tagsToRemoveBatches.length}...`);
+
+      // Remote deletion
       execSync(`git push origin :refs/tags/${batch.join(' :refs/tags/')}`);
+
+      // Local deletion
+      execSync(`git tag -d ${batch.join(' ')}`);
     });
 
     console.info(colorize(`✅  Clean finished, removed ${tagsList.length} tags in ${tagsToRemoveBatches.length} batches of ${batchSize}`, colorKeys.green))
