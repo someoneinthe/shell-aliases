@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 
 import {colorize, colorKeys} from './helpers/colors.mjs';
-import {getLocalBranches, switchLocalBranch} from "./helpers/git.mjs";
+import {getRemoteBranches, switchLocalBranch} from "./helpers/git.mjs";
 
 const [, , branchToFind] = process.argv;
 
@@ -10,7 +10,7 @@ if (!branchToFind) {
   process.exit(1);
 }
 
-const foundBranches = getLocalBranches()
+const foundBranches = getRemoteBranches()
   .split('\n')
   .map(line => line.trim().replace(/\s.*/, ''))
   .filter(data => !!data)

@@ -10,7 +10,7 @@ const fetchBranches = () => {
   }
 }
 
-export const getLocalBranches = () => {
+export const getRemoteBranches = () => {
   fetchBranches();
 
   try {
@@ -47,7 +47,6 @@ export const getCurrentBranchName = () => {
     return execSync('git rev-parse --abbrev-ref HEAD').toString().trim()
   } catch {
     console.log(colorize('❗️ Can\'t get current branch.', colorKeys.red));
-
     process.exit(1);
   }
 }
