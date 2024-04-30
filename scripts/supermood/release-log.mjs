@@ -143,8 +143,10 @@ const getFullLog = (formattedCommitsList, version) => `*Supermood version ${vers
 Here is the changelog for this new version:
 ${formattedCommitsList.join('\n')}
 
-  1. :unlock: Login: https://app.preprod.supermood.com/auth/sso/saml20?sk=supermood-fr
-  2. :rocket: Test: https://v${version.replace('.', '-')}-dot-preprod-supermood.ew.r.appspot.com/auth/domain-switch/go-dot-com
+  1. :unlock: Login: https://app.preprod.supermood.com/auth/sso/saml20?sk=supermood-fr&redirectTo=%2Fapp%2F%23%2Fmooder-office%2Fadmin-dev%2Fcache
+  2. :arrows_clockwise: Refresh the cache of app engine URLs
+  3. :rocket: Test (backoffice): https://v${version.replace('.', '-')}-dot-backoffice-dot-preprod-supermood.ew.r.appspot.com/app/domain-switch
+  4. :rocket: Test (API): https://app.preprod.supermood.com/app/?apiVersion=${version.replace('.', '-')}#/
 
   Please react with :heavy_check_mark: or :x: after testing your own commits.
 `;
