@@ -1,7 +1,5 @@
-#!/usr/bin/env node
-
 import {colorize, colorKeys} from './helpers/colors.mjs';
-import {getRemoteBranches, switchLocalBranch} from "./helpers/git.mjs";
+import {getRemoteBranches, switchLocalBranch} from './helpers/git.mjs';
 
 const [, , branchToFind] = process.argv;
 
@@ -19,11 +17,13 @@ const foundBranches = getRemoteBranches()
 
 if (!foundBranches.length) {
   console.log(colorize(`⚠️ No branch found with given name "${branchToFind}"`, colorKeys.yellow));
-} else if (foundBranches.length === 1) {
+}
+else if (foundBranches.length === 1) {
   const [branchToSwitch] = foundBranches;
 
   switchLocalBranch(branchToSwitch);
-} else {
+}
+else {
   console.log(colorize(`⚠️ Multiple branches found with given name "${branchToFind}":\n${foundBranches.join('\n ')}`, colorKeys.yellow));
 }
 

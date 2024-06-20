@@ -1,11 +1,7 @@
-#!/usr/bin/env node
-
 import {execSync} from 'node:child_process';
 import {copyToClipboard} from '../helpers/clipboard.mjs';
 import {colorize, colorKeys} from '../helpers/colors.mjs';
-
-// Check 1.1234.12a tag format
-const gitTagFormat = /^\d\.\d{3,4}\.\d{1,2}\w?/i;
+import {gitTagFormat} from '../helpers/git.mjs';
 
 /**
  * @description Get formatted args from process
@@ -41,7 +37,7 @@ const getTagsToCompare = () => {
   else if (!from && !to) {
     console.info(colorize('ℹ️  You didn\'t provide a tag range, we will use the last 2 tags to generate the changelog', colorKeys.yellow));
     // get last 20 tags (more than we need to be sure to exclude test tags)
-    const lastTagsList = execSync(`git tag --sort=committerdate | tail -50`).toString()
+    const lastTagsList = execSync('git tag --sort=committerdate | tail -50').toString()
       .split('\n')
       .filter(currentTag => currentTag?.match(gitTagFormat));
 

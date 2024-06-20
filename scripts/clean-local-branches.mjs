@@ -1,8 +1,6 @@
-#!/usr/bin/env node
-
 import {execSync} from 'node:child_process';
 import {colorize, colorKeys} from './helpers/colors.mjs';
-import {getCurrentBranchName, getLocalRemovedBranches} from "./helpers/git.mjs";
+import {getCurrentBranchName, getLocalRemovedBranches} from './helpers/git.mjs';
 
 const currentBranch = getCurrentBranchName();
 
@@ -14,8 +12,9 @@ getLocalRemovedBranches()
   .filter(branchName => !!branchName)
   .forEach(branchName => {
     if (branchName === currentBranch) {
-      console.log(colorize('⚠️  Your current branch has gone. Switch to another branch to remove it', colorKeys.yellow))
-    } else {
+      console.log(colorize('⚠️  Your current branch has gone. Switch to another branch to remove it', colorKeys.yellow));
+    }
+    else {
       console.log(execSync(`git branch -d -f ${branchName}`).toString());
     }
   });

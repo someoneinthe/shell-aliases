@@ -1,19 +1,14 @@
-#!/usr/bin/env node
-
 import {execSync} from 'node:child_process';
-import {copyToClipboard} from './helpers/clipboard.mjs';
-import {getTagsList} from './helpers/git.mjs';
-import {colorize, colorKeys} from './helpers/colors.mjs';
 import promptSync from 'prompt-sync';
+import {copyToClipboard} from './helpers/clipboard.mjs';
+import {colorize, colorKeys} from './helpers/colors.mjs';
+import {getTagsList, gitTagFormat} from './helpers/git.mjs';
 
 const [, , dryMode] = process.argv;
 const isDryMode = ['--dry', 'true', true].includes(dryMode);
 const prompt = promptSync({sigint: true});
 
-// Check 1.1234.12a tag format
-const gitTagFormat = /^\d\.\d{1,4}\.\d{1,2}\w?/i;
-
-if(isDryMode) {
+if (isDryMode) {
   console.log(colorize('⚠️  You are running the script in dry mode. This won\'t erase any tag, just list the tags to be removed', colorKeys.yellow));
 
   prompt('Press RETURN to continue', {echo: ''});
@@ -27,7 +22,9 @@ else {
 const orderTags = tagsList => tagsList.reduce((accumulator, currentTag) => {
   const isVersionTag = currentTag.match(gitTagFormat);
 
-  if (!isVersionTag) console.log(currentTag)
+  if (!isVersionTag) {
+    console.log(currentTag);
+  }
   isVersionTag ? accumulator.versionTags.push(currentTag) : accumulator.otherTags.push(currentTag);
 
   return accumulator;
@@ -71,8 +68,9 @@ const removeTagsWithBatch = (tagsList, batchSize = 10) => {
       execSync(`git tag -d ${batch.join(' ')}`);
     });
 
-    console.info(colorize(`✅  Clean finished, removed ${tagsList.length} tags in ${tagsToRemoveBatches.length} batches of ${batchSize}`, colorKeys.green))
-  } else {
+    console.info(colorize(`✅  Clean finished, removed ${tagsList.length} tags in ${tagsToRemoveBatches.length} batches of ${batchSize}`, colorKeys.green));
+  }
+  else {
     console.info(colorize('❗️ Nothing to clean', colorKeys.green));
     process.exit(0);
   }
@@ -80,7 +78,7 @@ const removeTagsWithBatch = (tagsList, batchSize = 10) => {
 
 const orderedTags = orderTags(getTagsList());
 
-if(isDryMode) {
+if (isDryMode) {
   console.info(colorize(`ℹ️  ${orderedTags.otherTags.length} tags to be removed`, colorKeys.yellow));
 
   if (copyToClipboard(orderedTags.otherTags.join('\n'))) {
@@ -90,7 +88,7 @@ if(isDryMode) {
 else {
   console.warn('ℹ️  Clean tags');
 
-  removeTagsWithBatch(orderedTags.otherTags, 50)
+  removeTagsWithBatch(orderedTags.otherTags, 50);
 }
 
 process.exit(0);
