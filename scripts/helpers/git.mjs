@@ -1,8 +1,8 @@
 import {execSync} from 'node:child_process';
 import {colorize, colorKeys} from './colors.mjs';
 
-// Check 1.1234.12a tag format
-export const gitTagFormat = /^\d\.\d{1,4}\.\d{1,2}[a-z]?/i;
+// Check 1.1234.12a, or backoffice-1.2.3a tag format
+export const gitTagFormat = /^([a-z-]+-)?(?:\d{1,4}\.){2}\d{1,2}[a-z]?$/gi;
 
 const fetchBranches = () => {
   try {

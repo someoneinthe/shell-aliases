@@ -135,13 +135,13 @@ const formatCommits = commitsList => {
  * @param {string} version - version to display
  * @returns {string} - full changelog message
  */
-const getFullLog = (formattedCommitsList, version) => `*Supermood version ${version} is now released!* :tada:
-Here is the changelog for this new version:
+const getFullLog = (formattedCommitsList, version) => `*Supermood is now released!* :tada:
+Here is the changelog:
 ${formattedCommitsList.join('\n')}
 
   1. :unlock: Login: https://app.preprod.supermood.com/auth/sso/saml20?sk=supermood-fr&redirectTo=%2Fapp%2F%23%2Fmooder-office%2Fadmin-dev%2Fcache
   2. :arrows_clockwise: Refresh the cache of app engine URLs
-  3. :rocket: Test (backoffice): https://v${version.replace('.', '-')}-dot-backoffice-dot-preprod-supermood.ew.r.appspot.com/app/domain-switch
+  3. :rocket: Test (backoffice): https://v${version.replace('.', '-')}-dot-backoffice-dot-preprod-supermood.appspot.com/app/domain-switch
   4. :rocket: Test (API): https://app.preprod.supermood.com/app/?apiVersion=${version.replace('.', '-')}#/
 
   Please react with :heavy_check_mark: or :x: after testing your own commits.
