@@ -34,20 +34,16 @@ const getTagsToCompare = () => {
     return {from, to};
   }
   // we need to search within tags list to get last 2 tags
-  else if (!from && !to) {
+  else {
     console.info(colorize('ℹ️  You didn\'t provide a tag range, we will use the last 2 tags to generate the changelog', colorKeys.yellow));
     // get last 20 tags (more than we need to be sure to exclude test tags)
     const lastTagsList = execSync('git tag --sort=committerdate | tail -50').toString()
       .split('\n')
       .filter(currentTag => currentTag?.match(gitTagFormat));
 
-    const [from, to] = lastTagsList.slice(-2);
+    const [fromTags, toTags] = lastTagsList.slice(-2);
 
-    return {from, to};
-  }
-  else {
-    console.error(colorize('❌ Please provide a valid tag range', colorKeys.red));
-    process.exit(1);
+    return {from: from ?? fromTags, to: to ?? toTags};
   }
 };
 
