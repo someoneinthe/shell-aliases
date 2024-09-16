@@ -65,10 +65,6 @@ export default [
         'error',
         'always-multiline',
       ],
-      indent: [
-        'warn',
-        2,
-      ],
       'n/no-process-exit': 'off',
       'n/shebang': 'off',
       'no-trailing-spaces': 'error',
