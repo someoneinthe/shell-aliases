@@ -21,10 +21,15 @@ export const getRemoteBranches = () => {
     return execSync('git branch -r').toString().trim();
   }
   catch {
-    console.log(colorize('❗️ Can\'t fetch remotes branches.', colorKeys.red));
+    console.log(colorize('❗️ Can\'t list remotes branches.', colorKeys.red));
     process.exit(1);
   }
 };
+
+export const getUncommittedFiles = () => execSync('git status').toString().trim()
+  .split('\n')
+  .filter(line => line.startsWith('\t'))
+  .map(line => line.trim().replaceAll('\t', ''));
 
 export const switchLocalBranch = branchToSwitch => {
   fetchBranches();
@@ -33,6 +38,7 @@ export const switchLocalBranch = branchToSwitch => {
     return execSync(`git switch ${branchToSwitch}`);
   }
   catch {
+    console.info(colorize(`❗️ Can't switch to branch ${branchToSwitch}, maybe you should stash your work first`, colorKeys.red));
     process.exit(1);
   }
 };
@@ -44,7 +50,7 @@ export const getLocalRemovedBranches = () => {
     return execSync('git branch -vv').toString().trim();
   }
   catch {
-    console.log(colorize('❗️ Can\'t fetch remotes branches', colorKeys.red));
+    console.log(colorize('❗️ Can\'t get locale branches', colorKeys.red));
     process.exit(1);
   }
 };
@@ -62,7 +68,8 @@ export const getCurrentBranchName = () => {
 export const getTagsList = () => {
   fetchBranches();
 
-  return execSync('git tag').toString().trim()
+  return execSync('git tag --sort=committerdate').toString().trim()
     .split('\n')
-    .filter(Boolean);
+    .filter(Boolean)
+    .toReversed();
 };

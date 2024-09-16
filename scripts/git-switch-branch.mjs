@@ -24,6 +24,7 @@ else if (foundBranches.length === 1) {
   switchLocalBranch(branchToSwitch);
 }
 else {
+  // TODO ask user to choose branch with prompt autocomplete option
   console.log(colorize(`⚠️ Multiple branches found with given name "${branchToFind}":\n${foundBranches.join('\n ')}`, colorKeys.yellow));
 }
 

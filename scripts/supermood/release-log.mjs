@@ -1,24 +1,8 @@
 import {execSync} from 'node:child_process';
 import {copyToClipboard} from '../helpers/clipboard.mjs';
 import {colorize, colorKeys} from '../helpers/colors.mjs';
-import {gitTagFormat} from '../helpers/git.mjs';
-
-/**
- * @description Get formatted args from process
- *
- * @returns {{[key: string]: string}}
- */
-const getCleanArguments = () => {
-  const [, , ...arguments_] = process.argv;
-  const cleanArguments = {};
-
-  arguments_?.forEach(argument => {
-    const [argumentName, argumentValue] = argument.split('=');
-    cleanArguments[argumentName] = argumentValue;
-  });
-
-  return cleanArguments;
-};
+import {getTagsList, gitTagFormat} from '../helpers/git.mjs';
+import {getCleanArguments} from '../helpers/process.mjs';
 
 /**
  * @description Get tags to compare from args or from git tags list
@@ -37,11 +21,9 @@ const getTagsToCompare = () => {
   else {
     console.info(colorize('ℹ️  You didn\'t provide a tag range, we will use the last 2 tags to generate the changelog', colorKeys.yellow));
     // get last 20 tags (more than we need to be sure to exclude test tags)
-    const lastTagsList = execSync('git tag --sort=committerdate | tail -50').toString()
-      .split('\n')
-      .filter(currentTag => currentTag?.match(gitTagFormat));
+    const lastTagsList = getTagsList().filter(currentTag => currentTag?.match(gitTagFormat));
 
-    const [fromTags, toTags] = lastTagsList.slice(-2);
+    const [toTags, fromTags] = lastTagsList.slice(0, 2);
 
     return {from: from ?? fromTags, to: to ?? toTags};
   }

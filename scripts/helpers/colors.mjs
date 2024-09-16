@@ -1,4 +1,5 @@
 export const colorKeys = {
+  blue: 'blue',
   default: 'default',
   green: 'green',
   red: 'red',
@@ -8,6 +9,7 @@ export const colorKeys = {
 
 const colors = {
   [colorKeys.default]: '\u001B[0;39m',
+  [colorKeys.blue]: '\u001B[0;34m',
   [colorKeys.green]: '\u001B[0;32m',
   [colorKeys.red]: '\u001B[0;31m',
   [colorKeys.white]: '\u001B[0;97m',
