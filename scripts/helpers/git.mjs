@@ -73,3 +73,11 @@ export const getTagsList = () => {
     .filter(Boolean)
     .toReversed();
 };
+
+export const createAndPushTag = tagName => {
+  execSync(`git tag ${tagName} && git push origin ${tagName}`).toString();
+};
+
+export const rebaseLocaleBranch = branchName => {
+  execSync(`git rebase origin/${branchName}`).toString();
+};

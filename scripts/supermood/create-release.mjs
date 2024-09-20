@@ -2,12 +2,16 @@ import {execSync} from 'node:child_process';
 import promptSync from 'prompt-sync';
 import {colorize, colorKeys} from '../helpers/colors.mjs';
 import {
+  createAndPushTag,
   getCurrentBranchName,
   getTagsList,
   getUncommittedFiles,
   gitTagFormat,
+  rebaseLocaleBranch,
   switchLocalBranch,
 } from '../helpers/git.mjs';
+
+const SHELL_ALIAS_DIR = process.env.SHELL_ALIAS_DIR;
 
 const availableVersionNamePrefixes = [
   'api',
@@ -44,7 +48,7 @@ const getNextVersion = (releasePrefix, releaseType, lastReleasedTag) => {
       break;
     }
     case 'patch': {
-      nextReleaseVersion = `${currentReleaseVersionList.at(0)}.${currentReleaseVersionList.at(1)}.${Number(currentReleaseVersionList.at(2)) + 1}`;
+      nextReleaseVersion = `${currentReleaseVersionList.at(0)}.${currentReleaseVersionList.at(1)}.${Number(currentReleaseVersionList.at(2).replace(/\D/, '')) + 1}`;
       break;
     }
     default: {
@@ -104,9 +108,10 @@ if (!['', 'y'].includes(prompt(colorize(`ℹ️ The version \`${colorize(nextRel
 }
 
 // tag && push
-execSync(`git tag ${nextReleaseVersionName} && git push origin ${nextReleaseVersionName}`);
+rebaseLocaleBranch(releaseBranch);
+createAndPushTag(nextReleaseVersionName);
 
 // display releaselog
-execSync('releaseLog');
+console.log(execSync(`node ${SHELL_ALIAS_DIR}/scripts/supermood/release-log.mjs`).toString());
 
 process.exit(0);
