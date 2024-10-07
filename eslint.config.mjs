@@ -3,7 +3,6 @@ import eslintPluginStylistic from '@stylistic/eslint-plugin';
 import eslintPluginImport from 'eslint-plugin-import';
 import eslintPluginN from 'eslint-plugin-n';
 import eslintPluginPerfectionist from 'eslint-plugin-perfectionist';
-import eslintPluginPerfectionistNatural from 'eslint-plugin-perfectionist/configs/recommended-natural';
 import eslintPluginSortKeysShorthand from 'eslint-plugin-sort-keys-shorthand';
 import eslintPluginUnicorn from 'eslint-plugin-unicorn';
 import globals from 'globals';
@@ -12,7 +11,7 @@ export default [
   eslint.configs.recommended,
   eslintPluginStylistic.configs['all-flat'],
   eslintPluginUnicorn.configs['flat/recommended'],
-  eslintPluginPerfectionistNatural,
+  eslintPluginPerfectionist.configs['recommended-natural'],
   eslintPluginN.configs['flat/recommended'],
   {
     ignores: ['node_modules/'],
@@ -34,7 +33,6 @@ export default [
     plugins: {
       '@stylistic': eslintPluginStylistic,
       import: eslintPluginImport,
-      perfectionist: eslintPluginPerfectionist,
       'sort-keys-shorthand': eslintPluginSortKeysShorthand,
     },
     rules: {
@@ -80,7 +78,7 @@ export default [
       'perfectionist/sort-enums': [
         'error',
         {
-          'ignore-case': true,
+          ignoreCase: true,
           order: 'asc',
           type: 'natural',
         },
@@ -98,8 +96,8 @@ export default [
             'object',
             'unknown',
           ],
-          'ignore-case': true,
-          'newlines-between': 'never',
+          ignoreCase: true,
+          newlinesBetween: 'never',
           order: 'asc',
           type: 'natural',
         },
@@ -107,15 +105,7 @@ export default [
       'perfectionist/sort-interfaces': [
         'error',
         {
-          'ignore-case': true,
-          order: 'asc',
-          type: 'natural',
-        },
-      ],
-      'perfectionist/sort-intersection-types': [
-        'error',
-        {
-          'ignore-case': true,
+          ignoreCase: true,
           order: 'asc',
           type: 'natural',
         },
@@ -123,7 +113,7 @@ export default [
       'perfectionist/sort-named-imports': [
         'error',
         {
-          'ignore-case': true,
+          ignoreCase: true,
           order: 'asc',
           type: 'natural',
         },
@@ -131,21 +121,12 @@ export default [
       'perfectionist/sort-object-types': [
         'error',
         {
-          'ignore-case': true,
+          ignoreCase: true,
           order: 'asc',
           type: 'natural',
         },
       ],
       'perfectionist/sort-objects': 'off',
-      'perfectionist/sort-union-types': [
-        'error',
-        {
-          'ignore-case': true,
-          'nullable-last': true,
-          order: 'asc',
-          type: 'natural',
-        },
-      ],
       'prefer-template': 'error',
       'sort-keys-shorthand/sort-keys-shorthand': [
         'error',
