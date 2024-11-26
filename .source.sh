@@ -5,3 +5,5 @@ alias generateRelease="node $SHELL_ALIAS_DIR/scripts/supermood/create-release.mj
 alias gitCleanTags="node $SHELL_ALIAS_DIR/scripts/git-tags-clean.mjs"
 alias gswitch="node $SHELL_ALIAS_DIR/scripts/git-switch-branch.mjs"
 alias releaseLog="node $SHELL_ALIAS_DIR/scripts/supermood/release-log.mjs"
+alias gs="git status"
+alias gskip="git rebase --skip"
