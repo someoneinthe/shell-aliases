@@ -1,5 +1,5 @@
 import {execSync} from 'node:child_process';
-import promptSync from 'prompt-sync';
+import prompts from 'prompts';
 import {colorize, colorKeys} from '../helpers/colors.mjs';
 import {
   createAndPushTag,
@@ -59,8 +59,6 @@ const getNextVersion = (releasePrefix, releaseType, lastReleasedTag) => {
   return `${releasePrefix}-${nextReleaseVersion}`;
 };
 
-const prompt = promptSync({sigint: true});
-
 console.info('ℹ️ This script will create a new tag, push it to the remote repository and extract the release log');
 
 // Check if there are uncommitted files
@@ -73,7 +71,14 @@ if (getUncommittedFiles().length) {
 if (getCurrentBranchName() !== releaseBranch) {
   console.error('❗ You must be on the master branch to create a release');
 
-  if (['', 'y'].includes(prompt(`Do you want to switch to \`${releaseBranch}\`? (y)`))) {
+  const {willSwitch} = await prompts({
+    initial: true,
+    message: `Do you want to switch to \`${releaseBranch}\`?`,
+    name: 'willSwitch',
+    type: 'confirm',
+  });
+
+  if (willSwitch) {
     switchLocalBranch(releaseBranch);
   }
   else {
@@ -84,7 +89,12 @@ if (getCurrentBranchName() !== releaseBranch) {
 console.info('ℹ️ Those services are available for release:');
 console.info(colorize(availableVersionNamePrefixes.join('\n'), colorKeys.blue));
 
-const releasePrefix = prompt('Which service to release? (tap or tab to select service)', {autocomplete: search => availableVersionNamePrefixes.filter(prefix => prefix.includes(search))});
+const {releasePrefix} = await prompts({
+  choices: availableVersionNamePrefixes.map(prefix => ({title: prefix, value: prefix})),
+  message: 'Which service to release?',
+  name: 'releasePrefix',
+  type: 'select',
+});
 
 const lastTagForPrefix = getTagsList()
   .find(currentTag => currentTag?.match(gitTagFormat) && currentTag.startsWith(releasePrefix));
@@ -99,11 +109,23 @@ else {
 console.info('ℹ️ Those version types are available for release:');
 console.info(colorize(availableVersionTypes.join('\n'), colorKeys.blue));
 
-const releaseType = prompt('Which version type to upgrade? (tap or tab to select service)', {autocomplete: search => availableVersionTypes.filter(prefix => prefix.includes(search))});
+const {releaseType} = await prompts({
+  choices: availableVersionTypes.map(prefix => ({title: prefix, value: prefix})),
+  message: 'Which version type to upgrade?',
+  name: 'releaseType',
+  type: 'select',
+});
 
 const nextReleaseVersionName = getNextVersion(releasePrefix, releaseType, lastTagForPrefix);
 
-if (!['', 'y'].includes(prompt(colorize(`ℹ️ The version \`${colorize(nextReleaseVersionName, colorKeys.yellow)}\` will be created and published, are you sure? (y)`, colorKeys.blue)))) {
+const {willPublish} = await prompts({
+  initial: true,
+  message: colorize(`ℹ️ The version \`${colorize(nextReleaseVersionName, colorKeys.yellow)}\` will be created and published, are you sure?`, colorKeys.blue),
+  name: 'willPublish',
+  type: 'confirm',
+});
+
+if (!willPublish) {
   process.exit(0);
 }
 

@@ -1,22 +1,37 @@
 import {execSync} from 'node:child_process';
-import promptSync from 'prompt-sync';
+import prompts from 'prompts';
 import {copyToClipboard} from './helpers/clipboard.mjs';
 import {colorize, colorKeys} from './helpers/colors.mjs';
 import {getTagsList, gitTagFormat} from './helpers/git.mjs';
 
 const [, , dryMode] = process.argv;
 const isDryMode = ['--dry', 'true', true].includes(dryMode);
-const prompt = promptSync({sigint: true});
 
 if (isDryMode) {
-  console.log(colorize('⚠️  You are running the script in dry mode. This won\'t erase any tag, just list the tags to be removed', colorKeys.yellow));
+  const {willContinue} = await prompts({
+    initial: true,
+    message: colorize('⚠️  You are running the script in dry mode. This won\'t erase any tag, just list the tags to be removed', colorKeys.yellow),
+    name: 'willSwitch',
+    type: 'confirm',
+  });
 
-  prompt('Press RETURN to continue', {echo: ''});
+  if (!willContinue) {
+    process.exit(0);
+  }
 }
 else {
   console.log(colorize('❗️ You didn\'t provide dry mode argument. Tags will be removed', colorKeys.red));
 
-  prompt('Are you sure you want to proceed? (y)') !== 'y' && process.exit(0);
+  const {willContinue} = await prompts({
+    initial: false,
+    message: 'Are you sure you want to proceed?',
+    name: 'willSwitch',
+    type: 'confirm',
+  });
+
+  if (!willContinue) {
+    process.exit(0);
+  }
 }
 
 const orderTags = tagsList => tagsList.reduce((accumulator, currentTag) => {

@@ -15,7 +15,7 @@ SHELL_ALIAS_DIR=$PATH_TO_REPOSITORY
 source $SHELL_ALIAS_DIR/.source.sh
 ```
 
-### Add only pecific shortcuts
+### Add only specific shortcuts
 
 ```bash
 SHELL_ALIAS_DIR=$PATH_TO_REPOSITORY
