@@ -18,9 +18,9 @@
     "eslint-plugin-unicorn": "^56.x",
     "globals": "^15.x",
     "husky": "^9.x",
-    "prompt-sync": "^4.x"
+    "prompts": "^2.x"
   },
   "engines": {
-    "node": ">=20"
+    "node": ">=22"
   }
 }
