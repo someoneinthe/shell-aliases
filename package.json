@@ -5,6 +5,9 @@
     "lint-code": "eslint \"**/*.mjs\""
   },
   "private": true,
+  "dependencies": {
+    "prompts": "^2.4.2"
+  },
   "devDependencies": {
     "@eslint/js": "^9.x",
     "@stylistic/eslint-plugin": "^2.x",
@@ -17,10 +20,6 @@
     "eslint-plugin-sort-keys-shorthand": "^2.x",
     "eslint-plugin-unicorn": "^56.x",
     "globals": "^15.x",
-    "husky": "^9.x",
-    "prompts": "^2.x"
-  },
-  "engines": {
-    "node": ">=22"
+    "husky": "^9.x"
   }
 }
