@@ -1,5 +1,5 @@
 import {spawn} from 'node:child_process';
-import {colorize, colorKeys} from './colors.mjs';
+import {colorize, colorKeys} from './shell-colors.mjs';
 
 /**
  * @description Copy message to clipboard

@@ -1,8 +1,8 @@
 import {execSync} from 'node:child_process';
 import prompts from 'prompts';
 import {copyToClipboard} from './helpers/clipboard.mjs';
-import {colorize, colorKeys} from './helpers/colors.mjs';
 import {getTagsList, gitTagFormat} from './helpers/git.mjs';
+import {colorize, colorKeys} from './helpers/shell-colors.mjs';
 
 const [, , dryMode] = process.argv;
 const isDryMode = ['--dry', 'true', true].includes(dryMode);

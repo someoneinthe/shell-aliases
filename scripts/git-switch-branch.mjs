@@ -1,5 +1,5 @@
-import {colorize, colorKeys} from './helpers/colors.mjs';
-import {getRemoteBranches, switchLocalBranch} from './helpers/git.mjs';
+import {getRemoteBranchesList, switchLocalBranch} from './helpers/git.mjs';
+import {colorize, colorKeys} from './helpers/shell-colors.mjs';
 
 const [, , branchToFind] = process.argv;
 
@@ -8,8 +8,7 @@ if (!branchToFind) {
   process.exit(1);
 }
 
-const foundBranches = getRemoteBranches()
-  .split('\n')
+const foundBranches = getRemoteBranchesList()
   .map(line => line.trim().replace(/\s.*/, ''))
   .filter(data => !!data)
   .filter(branchName => branchName.includes(branchToFind))

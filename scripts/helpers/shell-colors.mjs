@@ -1,3 +1,7 @@
+/**
+ * @description Add colors to shell output
+ */
+
 export const colorKeys = {
   blue: 'blue',
   default: 'default',
@@ -7,7 +11,7 @@ export const colorKeys = {
   yellow: 'yellow',
 };
 
-const colors = {
+const shellColors = {
   [colorKeys.default]: '\u001B[0;39m',
   [colorKeys.blue]: '\u001B[0;34m',
   [colorKeys.green]: '\u001B[0;32m',
@@ -16,8 +20,11 @@ const colors = {
   [colorKeys.yellow]: '\u001B[0;93m',
 };
 
+/**
+ * @description Output shell data with given color
+ */
 export const colorize = (message, color = colorKeys.default) => {
-  const colorToDisplay = colors[color] ?? colors.default;
+  const colorToDisplay = shellColors[color] ?? shellColors.default;
 
-  return `${colorToDisplay}${message}${colors.default}`;
+  return `${colorToDisplay}${message}${shellColors.default}`;
 };

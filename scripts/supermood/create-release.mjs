@@ -1,15 +1,22 @@
 import {execSync} from 'node:child_process';
 import prompts from 'prompts';
-import {colorize, colorKeys} from '../helpers/colors.mjs';
 import {
   createAndPushTag,
   getCurrentBranchName,
   getTagsList,
-  getUncommittedFiles,
+  getUncommittedFilesList,
   gitTagFormat,
   rebaseLocaleBranch,
   switchLocalBranch,
 } from '../helpers/git.mjs';
+import {colorize, colorKeys} from '../helpers/shell-colors.mjs';
+
+/**
+ * @description Generate and push a version.
+ * This script will ask you to choose a service and a version type to release.
+ * It will switch to master, rebase all merged commits, create a tag and push it.
+ * It will also display the release log.
+ */
 
 const SHELL_ALIAS_DIR = process.env.SHELL_ALIAS_DIR;
 
@@ -62,7 +69,7 @@ const getNextVersion = (releasePrefix, releaseType, lastReleasedTag) => {
 console.info('ℹ️ This script will create a new tag, push it to the remote repository and extract the release log');
 
 // Check if there are uncommitted files
-if (getUncommittedFiles().length) {
+if (getUncommittedFilesList().length) {
   console.error('❗ Your branch has uncommitted files. Please commit or stash them before creating a release');
   process.exit(0);
 }

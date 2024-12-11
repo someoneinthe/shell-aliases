@@ -1,5 +1,5 @@
 import {execSync} from 'node:child_process';
-import {colorize, colorKeys} from './colors.mjs';
+import {colorize, colorKeys} from './shell-colors.mjs';
 
 // Check 1.1234.12a, or backoffice-1.2.3a tag format
 export const gitTagFormat = /^([a-z-]+-)?(?:\d{1,4}\.){2}\d{1,2}[a-z]?$/gi;
@@ -14,11 +14,13 @@ const fetchBranches = () => {
   }
 };
 
-export const getRemoteBranches = () => {
+export const getRemoteBranchesList = () => {
   fetchBranches();
 
   try {
-    return execSync('git branch -r').toString().trim();
+    return execSync('git branch -r').toString()
+      .trim()
+      .split('\n');
   }
   catch {
     console.log(colorize('❗️ Can\'t list remotes branches.', colorKeys.red));
@@ -26,7 +28,7 @@ export const getRemoteBranches = () => {
   }
 };
 
-export const getUncommittedFiles = () => execSync('git status').toString().trim()
+export const getUncommittedFilesList = () => execSync('git status').toString().trim()
   .split('\n')
   .filter(line => line.startsWith('\t'))
   .map(line => line.trim().replaceAll('\t', ''));
@@ -35,7 +37,7 @@ export const switchLocalBranch = branchToSwitch => {
   fetchBranches();
 
   try {
-    return execSync(`git switch ${branchToSwitch}`);
+    execSync(`git switch ${branchToSwitch}`);
   }
   catch {
     console.info(colorize(`❗️ Can't switch to branch ${branchToSwitch}, maybe you should stash your work first`, colorKeys.red));
@@ -43,11 +45,13 @@ export const switchLocalBranch = branchToSwitch => {
   }
 };
 
-export const getLocalRemovedBranches = () => {
+export const getLocalBranchesList = () => {
   fetchBranches();
 
   try {
-    return execSync('git branch -vv').toString().trim();
+    return execSync('git branch -vv').toString()
+      .trim()
+      .split('\n');
   }
   catch {
     console.log(colorize('❗️ Can\'t get locale branches', colorKeys.red));
@@ -68,7 +72,8 @@ export const getCurrentBranchName = () => {
 export const getTagsList = () => {
   fetchBranches();
 
-  return execSync('git tag --sort=committerdate').toString().trim()
+  return execSync('git tag --sort=committerdate').toString()
+    .trim()
     .split('\n')
     .filter(Boolean)
     .toReversed();

@@ -1,11 +1,15 @@
 import {execSync} from 'node:child_process';
-import {colorize, colorKeys} from './helpers/colors.mjs';
-import {getCurrentBranchName, getLocalRemovedBranches} from './helpers/git.mjs';
+import {getCurrentBranchName, getLocalBranchesList} from './helpers/git.mjs';
+import {colorize, colorKeys} from './helpers/shell-colors.mjs';
+
+/**
+ * @description Clean local git branches that have been removed from remote
+ *
+ */
 
 const currentBranch = getCurrentBranchName();
 
-getLocalRemovedBranches()
-  .split('\n')
+getLocalBranchesList()
   .filter(rawLine => rawLine.includes(': gone]'))
   // trim, remove the '*' selector for current branch, and return the branch name
   .map(line => line.trim().replace(/^\*\s+/, '').replace(/\s.*/, ''))

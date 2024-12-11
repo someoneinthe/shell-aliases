@@ -1,8 +1,16 @@
 import {execSync} from 'node:child_process';
 import {copyToClipboard} from '../helpers/clipboard.mjs';
-import {colorize, colorKeys} from '../helpers/colors.mjs';
 import {getTagsList, gitTagFormat} from '../helpers/git.mjs';
 import {getCleanArguments} from '../helpers/process.mjs';
+import {colorize, colorKeys} from '../helpers/shell-colors.mjs';
+
+/**
+ * @description Generate a release log between different tags.
+ *
+ * @example: releaselog // generate release log between the 2 last tags
+ * @example: releaselog from=backoffice-1.0.1 // generate release log between the given tag and the last tag
+ * @example: releaselog from=backoffice-1.0.1 to=backoffice-2.0.0  // generate release log between the given tags
+ */
 
 /**
  * @description Get tags to compare from args or from git tags list
