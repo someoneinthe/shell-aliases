@@ -7,7 +7,7 @@ node files to be run in shell to help you for some commands
 ## Prerequisites
 
 For these scripts to work, you need to have the following installed on your machine:
-- `node`: any version
+- `node`: 22.x or most recent
 - `yarn` (or `npm` should work too): any version
 - `git`: 2.23.0 or most recent
 
@@ -29,10 +29,10 @@ source $SHELL_ALIAS_DIR/.source.sh
 
 ```bash
 SHELL_ALIAS_DIR=$PATH_TO_THIS_REPOSITORY
-alias myAliasName="node $SHELL_ALIAS_DIR/scripts/my-file-to-run.mjs"
+alias myAliasName="npx tsx $SHELL_ALIAS_DIR/scripts/my-file-to-run.ts"
 ```
 ### Execute without alias
 
 ```bash
-node $PATH_TO_THIS_REPOSITORY/scripts/my-file-to-run.mjs
+npx tsx $PATH_TO_THIS_REPOSITORY/scripts/my-file-to-run.ts
 ```

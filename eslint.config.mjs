@@ -6,9 +6,15 @@ import eslintPluginPerfectionist from 'eslint-plugin-perfectionist';
 import eslintPluginSortKeysShorthand from 'eslint-plugin-sort-keys-shorthand';
 import eslintPluginUnicorn from 'eslint-plugin-unicorn';
 import globals from 'globals';
+import typescriptEslint from 'typescript-eslint';
 
-export default [
+export default typescriptEslint.config(
   eslint.configs.recommended,
+  typescriptEslint.configs.recommended,
+  typescriptEslint.configs.strict,
+  typescriptEslint.configs.stylistic,
+  typescriptEslint.configs.strictTypeChecked,
+  typescriptEslint.configs.stylisticTypeChecked,
   eslintPluginStylistic.configs['all-flat'],
   eslintPluginUnicorn.configs['flat/recommended'],
   eslintPluginPerfectionist.configs['recommended-natural'],
@@ -22,8 +28,12 @@ export default [
       },
       parserOptions: {
         ecmaVersion: 'latest',
+        projectService: {
+          allowDefaultProject: ['*.mjs'],
+        },
         sourceType: 'module',
         strictPropertyInitialization: true,
+        tsconfigRootDir: import.meta.dirname,
       },
       sourceType: 'module',
     },
@@ -38,6 +48,7 @@ export default [
     rules: {
       '@stylistic/array-element-newline': ['error', 'consistent'],
       '@stylistic/arrow-parens': ['error', 'as-needed'],
+      '@stylistic/block-spacing': ['error', 'never'],
       '@stylistic/brace-style': ['error', 'stroustrup'],
       '@stylistic/comma-dangle': ['error', 'always-multiline'],
       '@stylistic/dot-location': ['error', 'property'],
@@ -51,6 +62,7 @@ export default [
       '@stylistic/quote-props': ['error', 'as-needed'],
       '@stylistic/quotes': ['error', 'single'],
       '@stylistic/semi': ['error', 'always'],
+      '@typescript-eslint/restrict-template-expressions': ['error', {allowNumber: true}],
       'arrow-body-style': [
         'error',
         'as-needed',
@@ -62,6 +74,11 @@ export default [
       'comma-dangle': [
         'error',
         'always-multiline',
+      ],
+      'n/no-missing-import': [
+        'error', {
+          tryExtensions: ['.js', '.ts'],
+        },
       ],
       'n/no-process-exit': 'off',
       'n/shebang': 'off',
@@ -151,4 +168,13 @@ export default [
       },
     },
   },
-];
+  {
+    // eslint config file
+    files: ['eslint.config.mjs'],
+    rules: {
+      '@typescript-eslint/no-unsafe-assignment': 'off',
+      '@typescript-eslint/no-unsafe-call': 'off',
+      '@typescript-eslint/no-unsafe-member-access': 'off',
+    },
+  },
+);

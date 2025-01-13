@@ -1,12 +1,10 @@
 import {spawn} from 'node:child_process';
-import {colorize, colorKeys} from './shell-colors.mjs';
+import {colorize, colorKeys} from './shell-colors';
 
 /**
  * @description Copy message to clipboard
- *
- * @param {string} text - text to copy
  */
-export const copyToClipboard = text => {
+export const copyToClipboard = (text: string) => {
   let child;
 
   try {

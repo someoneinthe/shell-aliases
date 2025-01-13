@@ -1,12 +1,11 @@
 import {execSync} from 'node:child_process';
-import {getCurrentBranchName, getLocalBranchesList} from './helpers/git.mjs';
-import {colorize, colorKeys} from './helpers/shell-colors.mjs';
+import {getCurrentBranchName, getLocalBranchesList} from './helpers/git';
+import {colorize, colorKeys} from './helpers/shell-colors';
 
 /**
  * @description Clean local git branches that have been removed from remote
  *
  */
-
 const currentBranch = getCurrentBranchName();
 
 getLocalBranchesList()

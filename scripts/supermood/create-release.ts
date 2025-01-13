@@ -8,8 +8,8 @@ import {
   gitTagFormat,
   rebaseLocaleBranch,
   switchLocalBranch,
-} from '../helpers/git.mjs';
-import {colorize, colorKeys} from '../helpers/shell-colors.mjs';
+} from '../helpers/git';
+import {colorize, colorKeys} from '../helpers/shell-colors';
 
 /**
  * @description Generate and push a version.
@@ -35,13 +35,13 @@ const availableVersionTypes = [
 
 const releaseBranch = 'master';
 
-const getNextVersion = (releasePrefix, releaseType, lastReleasedTag) => {
+const getNextVersion = (releasePrefix: string, releaseType: string, lastReleasedTag?: string) => {
   // no previous version, start from 1.0.0
   if (!lastReleasedTag) {
     return `${releasePrefix}-1.0.0`;
   }
 
-  const currentReleaseVersionList = lastReleasedTag?.replace(/\w+-/, '').split('.');
+  const currentReleaseVersionList = lastReleasedTag.replace(/\w+-/, '').split('.');
 
   let nextReleaseVersion = currentReleaseVersionList.join('.');
 
@@ -55,7 +55,7 @@ const getNextVersion = (releasePrefix, releaseType, lastReleasedTag) => {
       break;
     }
     case 'patch': {
-      nextReleaseVersion = `${currentReleaseVersionList.at(0)}.${currentReleaseVersionList.at(1)}.${Number(currentReleaseVersionList.at(2).replace(/\D/, '')) + 1}`;
+      nextReleaseVersion = `${currentReleaseVersionList.at(0)}.${currentReleaseVersionList.at(1)}.${Number(currentReleaseVersionList.at(2)?.replace(/\D/, '')) + 1}`;
       break;
     }
     default: {
@@ -83,7 +83,7 @@ if (getCurrentBranchName() !== releaseBranch) {
     message: `Do you want to switch to \`${releaseBranch}\`?`,
     name: 'willSwitch',
     type: 'confirm',
-  });
+  }) as {willSwitch: boolean};
 
   if (willSwitch) {
     switchLocalBranch(releaseBranch);
@@ -101,10 +101,10 @@ const {releasePrefix} = await prompts({
   message: 'Which service to release?',
   name: 'releasePrefix',
   type: 'select',
-});
+}) as {releasePrefix: string};
 
 const lastTagForPrefix = getTagsList()
-  .find(currentTag => currentTag?.match(gitTagFormat) && currentTag.startsWith(releasePrefix));
+  .find(currentTag => currentTag.match(gitTagFormat) && currentTag.startsWith(releasePrefix));
 
 if (lastTagForPrefix) {
   console.info(`ℹ️ Last tag for ${colorize(releasePrefix, colorKeys.yellow)} was ${colorize(lastTagForPrefix, colorKeys.yellow)}`);
@@ -121,7 +121,7 @@ const {releaseType} = await prompts({
   message: 'Which version type to upgrade?',
   name: 'releaseType',
   type: 'select',
-});
+}) as {releaseType: string};
 
 const nextReleaseVersionName = getNextVersion(releasePrefix, releaseType, lastTagForPrefix);
 
@@ -130,7 +130,7 @@ const {willPublish} = await prompts({
   message: colorize(`ℹ️ The version \`${colorize(nextReleaseVersionName, colorKeys.yellow)}\` will be created and published, are you sure?`, colorKeys.blue),
   name: 'willPublish',
   type: 'confirm',
-});
+}) as {willPublish: boolean};
 
 if (!willPublish) {
   process.exit(0);
@@ -141,6 +141,6 @@ rebaseLocaleBranch(releaseBranch);
 createAndPushTag(nextReleaseVersionName);
 
 // display releaselog
-console.log(execSync(`node ${SHELL_ALIAS_DIR}/scripts/supermood/release-log.mjs`).toString());
+console.log(execSync(`npx tsx ${SHELL_ALIAS_DIR}/scripts/supermood/release-log.ts`).toString());
 
 process.exit(0);

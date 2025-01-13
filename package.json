@@ -1,17 +1,20 @@
 {
   "name": "shell-alias",
-  "version": "1.0.0",
+  "version": "2.0.0",
   "scripts": {
-    "lint-code": "eslint \"**/*.mjs\""
+    "lint-code": "eslint ."
   },
   "private": true,
   "dependencies": {
-    "prompts": "^2.4.2"
+    "@types/node": "^22.x",
+    "@types/prompts": "^2.x",
+    "prompts": "^2.4.2",
+    "tsx": "^4.19.2",
+    "typescript": "^5.7.3"
   },
   "devDependencies": {
     "@eslint/js": "^9.x",
     "@stylistic/eslint-plugin": "^2.x",
-    "@types/node": "^22.x",
     "eslint": "^9.x",
     "eslint-plugin-import": "^2.x",
     "eslint-plugin-n": "^17.x",
@@ -20,6 +23,10 @@
     "eslint-plugin-sort-keys-shorthand": "^2.x",
     "eslint-plugin-unicorn": "^56.x",
     "globals": "^15.x",
-    "husky": "^9.x"
+    "husky": "^9.x",
+    "typescript-eslint": "^8.x"
+  },
+  "engines": {
+    "node": ">=22"
   }
 }

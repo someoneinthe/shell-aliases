@@ -1,46 +1,50 @@
 import {execSync} from 'node:child_process';
 import prompts from 'prompts';
-import {copyToClipboard} from './helpers/clipboard.mjs';
-import {getTagsList, gitTagFormat} from './helpers/git.mjs';
-import {colorize, colorKeys} from './helpers/shell-colors.mjs';
+import {copyToClipboard} from './helpers/clipboard';
+import {getTagsList, gitTagFormat} from './helpers/git';
+import {colorize, colorKeys} from './helpers/shell-colors';
 
 const [, , dryMode] = process.argv;
 const isDryMode = ['--dry', 'true', true].includes(dryMode);
 
 if (isDryMode) {
-  const {willContinue} = await prompts({
+  const {willSwitch} = await prompts({
     initial: true,
     message: colorize('⚠️  You are running the script in dry mode. This won\'t erase any tag, just list the tags to be removed', colorKeys.yellow),
     name: 'willSwitch',
     type: 'confirm',
-  });
+  }) as {willSwitch: boolean};
 
-  if (!willContinue) {
+  if (!willSwitch) {
     process.exit(0);
   }
 }
 else {
   console.log(colorize('❗️ You didn\'t provide dry mode argument. Tags will be removed', colorKeys.red));
 
-  const {willContinue} = await prompts({
+  const {willSwitch} = await prompts({
     initial: false,
     message: 'Are you sure you want to proceed?',
     name: 'willSwitch',
     type: 'confirm',
-  });
+  }) as {willSwitch: boolean};
 
-  if (!willContinue) {
+  if (!willSwitch) {
     process.exit(0);
   }
 }
 
-const orderTags = tagsList => tagsList.reduce((accumulator, currentTag) => {
+const orderTags = (tagsList: string[]) => tagsList.reduce((accumulator: {
+  otherTags: string[];
+  versionTags: string[];
+}, currentTag) => {
   const isVersionTag = currentTag.match(gitTagFormat);
 
   if (!isVersionTag) {
     console.log(currentTag);
   }
-  isVersionTag ? accumulator.versionTags.push(currentTag) : accumulator.otherTags.push(currentTag);
+
+  accumulator[isVersionTag ? 'versionTags' : 'otherTags'].push(currentTag);
 
   return accumulator;
 }, {
@@ -48,11 +52,11 @@ const orderTags = tagsList => tagsList.reduce((accumulator, currentTag) => {
   versionTags: [],
 });
 
-const removeTagsWithBatch = (tagsList, batchSize = 10) => {
+const removeTagsWithBatch = (tagsList: string[], batchSize = 10) => {
   // proceed deletion only if necessary
   if (tagsList.length) {
-    const tagsToRemoveBatches = [];
-    let currentBatchTagsLists = [];
+    const tagsToRemoveBatches: string[][] = [];
+    let currentBatchTagsLists: string[] = [];
 
     // tagsList is split in batches
     tagsList.forEach((tagName, index) => {
@@ -70,7 +74,9 @@ const removeTagsWithBatch = (tagsList, batchSize = 10) => {
     });
 
     // push last incomplete batch
-    currentBatchTagsLists.length && tagsToRemoveBatches.push(currentBatchTagsLists);
+    if (currentBatchTagsLists.length) {
+      tagsToRemoveBatches.push(currentBatchTagsLists);
+    }
 
     // proceed deletion
     tagsToRemoveBatches.forEach((batch, index) => {
@@ -96,7 +102,7 @@ const orderedTags = orderTags(getTagsList());
 if (isDryMode) {
   console.info(colorize(`ℹ️  ${orderedTags.otherTags.length} tags to be removed`, colorKeys.yellow));
 
-  if (copyToClipboard(orderedTags.otherTags.join('\n'))) {
+  if (orderedTags.otherTags.length && copyToClipboard(orderedTags.otherTags.join('\n'))) {
     console.info(colorize('✅ Tags list copied to clipboard', colorKeys.green));
   }
 }

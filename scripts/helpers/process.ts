@@ -1,13 +1,11 @@
 /**
  * @description Get formatted args from process
- *
- * @returns {{[key: string]: string}}
  */
-export const getCleanArguments = () => {
+export const getCleanArguments = (): Record<string, string> => {
   const [, , ...arguments_] = process.argv;
-  const cleanArguments = {};
+  const cleanArguments: Record<string, string> = {};
 
-  arguments_?.forEach(argument => {
+  arguments_.forEach(argument => {
     const [argumentName, argumentValue] = argument.split('=');
     cleanArguments[argumentName] = argumentValue;
   });

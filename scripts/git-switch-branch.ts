@@ -1,5 +1,5 @@
-import {getRemoteBranchesList, switchLocalBranch} from './helpers/git.mjs';
-import {colorize, colorKeys} from './helpers/shell-colors.mjs';
+import {getRemoteBranchesList, switchLocalBranch} from './helpers/git';
+import {colorize, colorKeys} from './helpers/shell-colors';
 
 const [, , branchToFind] = process.argv;
 

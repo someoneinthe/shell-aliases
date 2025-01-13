@@ -1,10 +1,10 @@
 import {execSync} from 'node:child_process';
-import {colorize, colorKeys} from './shell-colors.mjs';
+import {colorize, colorKeys} from './shell-colors';
 
 // Check 1.1234.12a, or backoffice-1.2.3a tag format
 export const gitTagFormat = /^([a-z-]+-)?(?:\d{1,4}\.){2}\d{1,2}[a-z]?$/gi;
 
-const fetchBranches = () => {
+const fetchBranches = (): void => {
   try {
     execSync('git fetch -p').toString();
   }
@@ -14,7 +14,7 @@ const fetchBranches = () => {
   }
 };
 
-export const getRemoteBranchesList = () => {
+export const getRemoteBranchesList = (): string[] => {
   fetchBranches();
 
   try {
@@ -28,12 +28,13 @@ export const getRemoteBranchesList = () => {
   }
 };
 
-export const getUncommittedFilesList = () => execSync('git status').toString().trim()
+export const getUncommittedFilesList = (): string[] => execSync('git status').toString()
+  .trim()
   .split('\n')
   .filter(line => line.startsWith('\t'))
   .map(line => line.trim().replaceAll('\t', ''));
 
-export const switchLocalBranch = branchToSwitch => {
+export const switchLocalBranch = (branchToSwitch: string): void => {
   fetchBranches();
 
   try {
@@ -45,7 +46,7 @@ export const switchLocalBranch = branchToSwitch => {
   }
 };
 
-export const getLocalBranchesList = () => {
+export const getLocalBranchesList = (): string[] => {
   fetchBranches();
 
   try {
@@ -59,7 +60,7 @@ export const getLocalBranchesList = () => {
   }
 };
 
-export const getCurrentBranchName = () => {
+export const getCurrentBranchName = (): string => {
   try {
     return execSync('git rev-parse --abbrev-ref HEAD').toString().trim();
   }
@@ -69,7 +70,7 @@ export const getCurrentBranchName = () => {
   }
 };
 
-export const getTagsList = () => {
+export const getTagsList = (): string[] => {
   fetchBranches();
 
   return execSync('git tag --sort=committerdate').toString()
@@ -79,10 +80,10 @@ export const getTagsList = () => {
     .toReversed();
 };
 
-export const createAndPushTag = tagName => {
+export const createAndPushTag = (tagName: string): void => {
   execSync(`git tag ${tagName} && git push origin ${tagName}`).toString();
 };
 
-export const rebaseLocaleBranch = branchName => {
+export const rebaseLocaleBranch = (branchName: string): void => {
   execSync(`git rebase origin/${branchName}`).toString();
 };

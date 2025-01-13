@@ -1,8 +1,8 @@
 import {execSync} from 'node:child_process';
-import {copyToClipboard} from '../helpers/clipboard.mjs';
-import {getTagsList, gitTagFormat} from '../helpers/git.mjs';
-import {getCleanArguments} from '../helpers/process.mjs';
-import {colorize, colorKeys} from '../helpers/shell-colors.mjs';
+import {copyToClipboard} from '../helpers/clipboard';
+import {getTagsList, gitTagFormat} from '../helpers/git';
+import {getCleanArguments} from '../helpers/process';
+import {colorize, colorKeys} from '../helpers/shell-colors';
 
 /**
  * @description Generate a release log between different tags.
@@ -14,11 +14,9 @@ import {colorize, colorKeys} from '../helpers/shell-colors.mjs';
 
 /**
  * @description Get tags to compare from args or from git tags list
- *
- * @returns {{from: string, to: string}}
  */
 const getTagsToCompare = () => {
-  const {from, to} = getCleanArguments();
+  const {from, to} = getCleanArguments() as {from?: string; to?: string};
 
   // from & to are url provided
   if (!!from && !!to) {
@@ -29,7 +27,7 @@ const getTagsToCompare = () => {
   else {
     console.info(colorize('ℹ️  You didn\'t provide a tag range, we will use the last 2 tags to generate the changelog', colorKeys.yellow));
     // get last 20 tags (more than we need to be sure to exclude test tags)
-    const lastTagsList = getTagsList().filter(currentTag => currentTag?.match(gitTagFormat));
+    const lastTagsList = getTagsList().filter(currentTag => currentTag.match(gitTagFormat));
 
     const [toTags, fromTags] = lastTagsList.slice(0, 2);
 
@@ -39,23 +37,16 @@ const getTagsToCompare = () => {
 
 /**
  * @description Get commits list from git log between two tags
- *
- * @param {string} from - tag to get commits from
- * @param {string} to - tag to get commits to
- * @returns {string[]} - commit list
  */
-const getCommitsList = ({from, to}) => execSync(`git log --pretty=format:"%s @%an" ${from}..${to}`).toString()
+const getCommitsList = ({from, to}: {from: string; to: string}): string[] => execSync(`git log --pretty=format:"%s @%an" ${from}..${to}`).toString()
   .split('\n')
   .filter(Boolean);
 
 /**
  * @description Get commit prefix from commit prefix to display an emoji
- *
- * @param {string} commitPrefix - commit prefix
- * @returns {string} - slack emoji
  */
-const getCommitPrefix = commitPrefix => {
-  const tagPrefixes = {
+const getCommitPrefix = (commitPrefix: string): string => {
+  const tagPrefixes: Record<string, string> = {
     build: ':building_construction:',
     ci: ':traffic_light:',
     docs: ':orange_book:',
@@ -67,17 +58,15 @@ const getCommitPrefix = commitPrefix => {
     style: ':put_litter_in_its_place:',
     test: ':female-scientist:',
   };
+
   return tagPrefixes[commitPrefix] || '';
 };
 
 /**
  * @description Order & format commits list to display them in slack
- *
- * @param commitsList
- * @returns {string[]}
  */
-const formatCommits = commitsList => {
-  const categorisedTags = {
+const formatCommits = (commitsList: string[]): string[] => {
+  const categorisedTags: Record<string, string[]> = {
     /* eslint-disable sort-keys-shorthand/sort-keys-shorthand */
     feat: [],
     fix: [],
@@ -95,7 +84,7 @@ const formatCommits = commitsList => {
   // order commits by category
   commitsList.forEach(currentTag => {
     const regex = /^\w+/g;
-    const [commitPrefix] = currentTag.match(regex);
+    const [commitPrefix] = currentTag.match(regex) as string[];
     const cleanCommitPrefix = commitPrefix.toLowerCase();
     const cleanLokaliseOnCurrentTag = cleanCommitPrefix === 'lokalise'
       ? currentTag.replace(' @Robin Nicollet', '')
@@ -103,9 +92,7 @@ const formatCommits = commitsList => {
     const cleanCurrentTag = cleanLokaliseOnCurrentTag.replace(/\(#(\d+)\)/, '[(#$1)](https://github.com/Supermood/main-app/pull/$1)');
     const currentTagFormatted = `> ${getCommitPrefix(cleanCommitPrefix)} ${cleanCurrentTag}`;
 
-    categorisedTags[cleanCommitPrefix]
-      ? categorisedTags[cleanCommitPrefix].push(currentTagFormatted)
-      : categorisedTags[cleanCommitPrefix] = [currentTagFormatted];
+    categorisedTags[cleanCommitPrefix].push(currentTagFormatted);
   });
 
   // remove empty categories, and join each category with a line break
@@ -116,12 +103,8 @@ const formatCommits = commitsList => {
 
 /**
  * @description Get full changelog message
- *
- * @param {string[]} formattedCommitsList - commits list to display
- * @param {string} version - version to display
- * @returns {string} - full changelog message
  */
-const getFullLog = (formattedCommitsList, version) => `*Supermood is now released!* :tada:
+const getFullLog = (formattedCommitsList: string[], version: string): string => `*Supermood is now released!* :tada:
 Here is the changelog:
 ${formattedCommitsList.join('\n')}
 
