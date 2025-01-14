@@ -9,6 +9,9 @@ import globals from 'globals';
 import typescriptEslint from 'typescript-eslint';
 
 export default typescriptEslint.config(
+  {
+    ignores: ['node_modules/', 'dist/'],
+  },
   eslint.configs.recommended,
   typescriptEslint.configs.recommended,
   typescriptEslint.configs.strict,
@@ -20,7 +23,6 @@ export default typescriptEslint.config(
   eslintPluginPerfectionist.configs['recommended-natural'],
   eslintPluginN.configs['flat/recommended'],
   {
-    ignores: ['node_modules/'],
     languageOptions: {
       ecmaVersion: 'latest',
       globals: {
@@ -172,6 +174,7 @@ export default typescriptEslint.config(
     // eslint config file
     files: ['eslint.config.mjs'],
     rules: {
+      '@typescript-eslint/no-unsafe-argument': 'off',
       '@typescript-eslint/no-unsafe-assignment': 'off',
       '@typescript-eslint/no-unsafe-call': 'off',
       '@typescript-eslint/no-unsafe-member-access': 'off',

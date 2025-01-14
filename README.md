@@ -7,11 +7,24 @@ node files to be run in shell to help you for some commands
 ## Prerequisites
 
 For these scripts to work, you need to have the following installed on your machine:
-- `node`: 22.x or most recent
+
+- `node`: lts or most recent
 - `yarn` (or `npm` should work too): any version
 - `git`: 2.23.0 or most recent
 
-You will also have to install dependencies with `yarn install --production` or `npm install` in the root directory of this repository.
+## Installation
+
+You will have to install dependencies in the root directory of this repository, then compile the files.
+
+```bash
+yarn install --production
+```
+
+A 'postinstall' script is automatically run to compile the typescript files. You can also build manually with:
+
+```bash
+yarn build
+````
 
 ## Usage
 
@@ -31,6 +44,7 @@ source $SHELL_ALIAS_DIR/.source.sh
 SHELL_ALIAS_DIR=$PATH_TO_THIS_REPOSITORY
 alias myAliasName="npx tsx $SHELL_ALIAS_DIR/scripts/my-file-to-run.ts"
 ```
+
 ### Execute without alias
 
 ```bash
