@@ -43,7 +43,7 @@ const getNextVersion = (releasePrefix: string, releaseType: string, lastReleased
 
   const currentReleaseVersionList = lastReleasedTag.replace(/\w+-/, '').split('.');
 
-  let nextReleaseVersion = currentReleaseVersionList.join('.');
+  let nextReleaseVersion;
 
   switch (releaseType) {
     case 'major': {
@@ -104,7 +104,7 @@ const {releasePrefix} = await prompts({
 }) as {releasePrefix: string};
 
 const lastTagForPrefix = getTagsList()
-  .find(currentTag => currentTag.match(gitTagFormat) && currentTag.startsWith(releasePrefix));
+  .find(currentTag => gitTagFormat.test(currentTag) && currentTag.startsWith(releasePrefix));
 
 if (lastTagForPrefix) {
   console.info(`ℹ️ Last tag for ${colorize(releasePrefix, colorKeys.yellow)} was ${colorize(lastTagForPrefix, colorKeys.yellow)}`);

@@ -38,7 +38,7 @@ const orderTags = (tagsList: string[]) => tagsList.reduce((accumulator: {
   otherTags: string[];
   versionTags: string[];
 }, currentTag) => {
-  const isVersionTag = currentTag.match(gitTagFormat);
+  const isVersionTag = gitTagFormat.test(currentTag);
 
   if (!isVersionTag) {
     console.log(currentTag);
