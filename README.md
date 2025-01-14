@@ -42,11 +42,11 @@ source $SHELL_ALIAS_DIR/.source.sh
 
 ```bash
 SHELL_ALIAS_DIR=$PATH_TO_THIS_REPOSITORY
-alias myAliasName="npx tsx $SHELL_ALIAS_DIR/scripts/my-file-to-run.ts"
+alias myAliasName="node $SHELL_ALIAS_DIR/dist/my-file-to-run.js"
 ```
 
 ### Execute without alias
 
 ```bash
-npx tsx $PATH_TO_THIS_REPOSITORY/scripts/my-file-to-run.ts
+node $PATH_TO_THIS_REPOSITORY/dist/my-file-to-run.js
 ```
