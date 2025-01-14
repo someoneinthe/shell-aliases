@@ -4,6 +4,8 @@
     "esModuleInterop": false,
     "forceConsistentCasingInFileNames": true,
     "module": "esnext",
+    "moduleResolution": "node",
+    "outDir": "dist",
     "skipLibCheck": true,
     "strict": true,
     "target": "esnext"
