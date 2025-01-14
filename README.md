@@ -2,7 +2,15 @@
 
 node files to be run in shell to help you for some commands
 
-[![Technical Debt](https://sonarcloud.io/api/project_badges/measure?project=shell-aliases&metric=sqale_index)](https://sonarcloud.io/summary/new_code?id=shell-aliases)
+[![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=shell-aliases&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=shell-aliases)
+[![Security Rating](https://sonarcloud.io/api/project_badges/measure?project=shell-aliases&metric=security_rating)](https://sonarcloud.io/summary/new_code?id=shell-aliases)
+[![Reliability Rating](https://sonarcloud.io/api/project_badges/measure?project=shell-aliases&metric=reliability_rating)](https://sonarcloud.io/summary/new_code?id=shell-aliases)
+[![Vulnerabilities](https://sonarcloud.io/api/project_badges/measure?project=shell-aliases&metric=vulnerabilities)](https://sonarcloud.io/summary/new_code?id=shell-aliases)
+
+[![Lines of Code](https://sonarcloud.io/api/project_badges/measure?project=shell-aliases&metric=ncloc)](https://sonarcloud.io/summary/new_code?id=shell-aliases)
+
+[![Bugs](https://sonarcloud.io/api/project_badges/measure?project=shell-aliases&metric=bugs)](https://sonarcloud.io/summary/new_code?id=shell-aliases)
+[![Code Smells](https://sonarcloud.io/api/project_badges/measure?project=shell-aliases&metric=code_smells)](https://sonarcloud.io/summary/new_code?id=shell-aliases)
 
 ## Prerequisites
 
