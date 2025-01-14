@@ -141,6 +141,6 @@ rebaseLocaleBranch(releaseBranch);
 createAndPushTag(nextReleaseVersionName);
 
 // display releaselog
-console.log(execSync(`npx tsx ${SHELL_ALIAS_DIR}/scripts/supermood/release-log.ts`).toString());
+console.log(execSync(`node ${SHELL_ALIAS_DIR}/dist/supermood/release-log.js`).toString());
 
 process.exit(0);
