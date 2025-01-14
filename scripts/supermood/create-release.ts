@@ -104,7 +104,7 @@ const {releasePrefix} = await prompts({
 }) as {releasePrefix: string};
 
 const lastTagForPrefix = getTagsList()
-  .find(currentTag => currentTag.match(gitTagFormat) && currentTag.startsWith(releasePrefix));
+  .find(currentTag => gitTagFormat.exec(currentTag) && currentTag.startsWith(releasePrefix));
 
 if (lastTagForPrefix) {
   console.info(`ℹ️ Last tag for ${colorize(releasePrefix, colorKeys.yellow)} was ${colorize(lastTagForPrefix, colorKeys.yellow)}`);

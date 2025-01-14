@@ -27,7 +27,7 @@ const getTagsToCompare = () => {
   else {
     console.info(colorize('ℹ️  You didn\'t provide a tag range, we will use the last 2 tags to generate the changelog', colorKeys.yellow));
     // get last 20 tags (more than we need to be sure to exclude test tags)
-    const lastTagsList = getTagsList().filter(currentTag => currentTag.match(gitTagFormat));
+    const lastTagsList = getTagsList().filter(currentTag => gitTagFormat.exec(currentTag));
 
     const [toTags, fromTags] = lastTagsList.slice(0, 2);
 
