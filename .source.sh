@@ -10,5 +10,5 @@ alias gs="git status"
 alias gskip="git rebase --skip"
 
 # supermood specific
-alias generateRelease="node $SHELL_ALIAS_DIR/dist/supermood/create-release.js"
-alias releaseLog="node $SHELL_ALIAS_DIR/dist/supermood/release-log.js"
+alias supermoodGenerateRelease="node $SHELL_ALIAS_DIR/dist/supermood/create-release.js"
+alias supermoodReleaseLog="node $SHELL_ALIAS_DIR/dist/supermood/release-log.js"
