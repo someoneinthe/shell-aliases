@@ -5,10 +5,11 @@ import eslintPluginN from 'eslint-plugin-n';
 import eslintPluginPerfectionist from 'eslint-plugin-perfectionist';
 import eslintPluginSortKeysShorthand from 'eslint-plugin-sort-keys-shorthand';
 import eslintPluginUnicorn from 'eslint-plugin-unicorn';
+import {defineConfig} from 'eslint/config';
 import globals from 'globals';
 import typescriptEslint from 'typescript-eslint';
 
-export default typescriptEslint.config(
+export default defineConfig(
   {
     ignores: ['node_modules/', 'dist/'],
   },
@@ -18,8 +19,8 @@ export default typescriptEslint.config(
   typescriptEslint.configs.stylistic,
   typescriptEslint.configs.strictTypeChecked,
   typescriptEslint.configs.stylisticTypeChecked,
-  eslintPluginStylistic.configs['all-flat'],
-  eslintPluginUnicorn.configs['flat/recommended'],
+  eslintPluginStylistic.configs.all,
+  eslintPluginUnicorn.configs.recommended,
   eslintPluginPerfectionist.configs['recommended-natural'],
   eslintPluginN.configs['flat/recommended'],
   {
