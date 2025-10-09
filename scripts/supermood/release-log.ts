@@ -2,7 +2,7 @@ import {execSync} from 'node:child_process';
 import {copyToClipboard} from '../helpers/clipboard';
 import {getTagsList, gitTagFormat} from '../helpers/git';
 import {getCleanArguments} from '../helpers/process';
-import {colorize, colorKeys} from '../helpers/shell-colors';
+import {colorize, ColorKeys} from '../helpers/shell-colors';
 
 /**
  * @description Generate a release log between different tags.
@@ -20,12 +20,12 @@ const getTagsToCompare = () => {
 
   // from & to are url provided
   if (!!from && !!to) {
-    console.info(colorize('ℹ️  You provided a tag range, we will use it to generate the changelog', colorKeys.yellow));
+    console.info(colorize('ℹ️  You provided a tag range, we will use it to generate the changelog', ColorKeys.YELLOW));
     return {from, to};
   }
   // we need to search within tags list to get last 2 tags
   else {
-    console.info(colorize('ℹ️  You didn\'t provide a tag range, we will use the last 2 tags to generate the changelog', colorKeys.yellow));
+    console.info(colorize('ℹ️  You didn\'t provide a tag range, we will use the last 2 tags to generate the changelog', ColorKeys.YELLOW));
     // get last 20 tags (more than we need to be sure to exclude test tags)
     const lastTagsList = getTagsList().filter(currentTag => gitTagFormat.test(currentTag));
 
@@ -122,7 +122,7 @@ const formattedTags = formatCommits(tagsList);
 const fullMessage = getFullLog(formattedTags, to);
 
 if (copyToClipboard(fullMessage)) {
-  console.info(colorize('✅ Changelog copied to clipboard', colorKeys.green));
+  console.info(colorize('✅ Changelog copied to clipboard', ColorKeys.GREEN));
 }
 
 console.log(fullMessage);

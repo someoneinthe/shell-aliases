@@ -9,7 +9,7 @@ import {
   rebaseLocaleBranch,
   switchLocalBranch,
 } from '../helpers/git';
-import {colorize, colorKeys} from '../helpers/shell-colors';
+import {colorize, ColorKeys} from '../helpers/shell-colors';
 
 /**
  * @description Generate and push a version.
@@ -94,7 +94,7 @@ if (getCurrentBranchName() !== releaseBranch) {
 }
 
 console.info('ℹ️ Those services are available for release:');
-console.info(colorize(availableVersionNamePrefixes.join('\n'), colorKeys.blue));
+console.info(colorize(availableVersionNamePrefixes.join('\n'), ColorKeys.BLUE));
 
 const {releasePrefix} = await prompts({
   choices: availableVersionNamePrefixes.map(prefix => ({title: prefix, value: prefix})),
@@ -107,14 +107,14 @@ const lastTagForPrefix = getTagsList()
   .find(currentTag => gitTagFormat.test(currentTag) && currentTag.startsWith(releasePrefix));
 
 if (lastTagForPrefix) {
-  console.info(`ℹ️ Last tag for ${colorize(releasePrefix, colorKeys.yellow)} was ${colorize(lastTagForPrefix, colorKeys.yellow)}`);
+  console.info(`ℹ️ Last tag for ${colorize(releasePrefix, ColorKeys.YELLOW)} was ${colorize(lastTagForPrefix, ColorKeys.YELLOW)}`);
 }
 else {
-  console.info(colorize(`ℹ️ No previous tags found for ${releasePrefix}`, colorKeys.yellow));
+  console.info(colorize(`ℹ️ No previous tags found for ${releasePrefix}`, ColorKeys.YELLOW));
 }
 
 console.info('ℹ️ Those version types are available for release:');
-console.info(colorize(availableVersionTypes.join('\n'), colorKeys.blue));
+console.info(colorize(availableVersionTypes.join('\n'), ColorKeys.BLUE));
 
 const {releaseType} = await prompts({
   choices: availableVersionTypes.map(prefix => ({title: prefix, value: prefix})),
@@ -127,7 +127,7 @@ const nextReleaseVersionName = getNextVersion(releasePrefix, releaseType, lastTa
 
 const {willPublish} = await prompts({
   initial: true,
-  message: colorize(`ℹ️ The version \`${colorize(nextReleaseVersionName, colorKeys.yellow)}\` will be created and published, are you sure?`, colorKeys.blue),
+  message: colorize(`ℹ️ The version \`${colorize(nextReleaseVersionName, ColorKeys.YELLOW)}\` will be created and published, are you sure?`, ColorKeys.BLUE),
   name: 'willPublish',
   type: 'confirm',
 }) as {willPublish: boolean};
@@ -137,7 +137,7 @@ if (!willPublish) {
 }
 
 // tag && push
-rebaseLocaleBranch(releaseBranch);
+rebaseLocaleBranch({branchName: releaseBranch});
 createAndPushTag(nextReleaseVersionName);
 
 // display releaselog

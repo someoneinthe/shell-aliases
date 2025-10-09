@@ -1,5 +1,5 @@
 import {spawn} from 'node:child_process';
-import {colorize, colorKeys} from './shell-colors';
+import {colorize, ColorKeys} from './shell-colors';
 
 /**
  * @description Copy message to clipboard
@@ -22,7 +22,7 @@ export const copyToClipboard = (text: string) => {
         child = spawn('clip');
       }
       catch {
-        console.info(colorize('⚠️  Could not copy to clipboard, please copy your data manually', colorKeys.yellow));
+        console.info(colorize('⚠️  Could not copy to clipboard, please copy your data manually', ColorKeys.YELLOW));
         return false;
       }
     }

@@ -1,11 +1,11 @@
 import prompts from 'prompts';
 import {getRemoteBranchesList, switchLocalBranch} from './helpers/git';
-import {colorize, colorKeys} from './helpers/shell-colors';
+import {colorize, ColorKeys} from './helpers/shell-colors';
 
 const [, , branchToFind] = process.argv;
 
 if (!branchToFind) {
-  console.log(colorize('❗️ No provided branch to switch', colorKeys.red));
+  console.log(colorize('❗️ No provided branch to switch', ColorKeys.RED));
   process.exit(1);
 }
 
@@ -17,7 +17,7 @@ const foundBranches = getRemoteBranchesList()
 const getBranchToSwitch = async (branchesList: string[]) => {
   switch (branchesList.length) {
     case 0: {
-      console.log(colorize(`⚠️ No branch found with given name "${branchToFind}"`, colorKeys.yellow));
+      console.log(colorize(`⚠️ No branch found with given name "${branchToFind}"`, ColorKeys.YELLOW));
 
       return '';
     }
@@ -27,7 +27,7 @@ const getBranchToSwitch = async (branchesList: string[]) => {
       return switchingBranch;
     }
     default: {
-      console.log(colorize(`⚠️ ${branchesList.length} branches found with given name`, colorKeys.yellow));
+      console.log(colorize(`⚠️ ${branchesList.length} branches found with given name`, ColorKeys.YELLOW));
 
       const {branchToSwitch: switchingBranch} = await prompts({
         choices: branchesList.map(branchName => ({title: branchName, value: branchName})),
@@ -45,7 +45,7 @@ const branchToSwitch = await getBranchToSwitch(foundBranches);
 
 if (branchToSwitch) {
   switchLocalBranch(branchToSwitch);
-  console.log(colorize('✅ Finished', colorKeys.green));
+  console.log(colorize('✅ Finished', ColorKeys.GREEN));
 }
 
 process.exit(0);

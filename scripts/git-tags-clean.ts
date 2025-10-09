@@ -2,7 +2,7 @@ import {execSync} from 'node:child_process';
 import prompts from 'prompts';
 import {copyToClipboard} from './helpers/clipboard';
 import {getTagsList, gitTagFormat} from './helpers/git';
-import {colorize, colorKeys} from './helpers/shell-colors';
+import {colorize, ColorKeys} from './helpers/shell-colors';
 
 const [, , dryMode] = process.argv;
 const isDryMode = ['--dry', 'true', true].includes(dryMode);
@@ -10,7 +10,7 @@ const isDryMode = ['--dry', 'true', true].includes(dryMode);
 if (isDryMode) {
   const {willSwitch} = await prompts({
     initial: true,
-    message: colorize('⚠️  You are running the script in dry mode. This won\'t erase any tag, just list the tags to be removed', colorKeys.yellow),
+    message: colorize('⚠️  You are running the script in dry mode. This won\'t erase any tag, just list the tags to be removed', ColorKeys.YELLOW),
     name: 'willSwitch',
     type: 'confirm',
   }) as {willSwitch: boolean};
@@ -20,7 +20,7 @@ if (isDryMode) {
   }
 }
 else {
-  console.log(colorize('❗️ You didn\'t provide dry mode argument. Tags will be removed', colorKeys.red));
+  console.log(colorize('❗️ You didn\'t provide dry mode argument. Tags will be removed', ColorKeys.RED));
 
   const {willSwitch} = await prompts({
     initial: false,
@@ -89,10 +89,10 @@ const removeTagsWithBatch = (tagsList: string[], batchSize = 10) => {
       execSync(`git tag -d ${batch.join(' ')}`);
     });
 
-    console.info(colorize(`✅  Clean finished, removed ${tagsList.length} tags in ${tagsToRemoveBatches.length} batches of ${batchSize}`, colorKeys.green));
+    console.info(colorize(`✅  Clean finished, removed ${tagsList.length} tags in ${tagsToRemoveBatches.length} batches of ${batchSize}`, ColorKeys.GREEN));
   }
   else {
-    console.info(colorize('❗️ Nothing to clean', colorKeys.green));
+    console.info(colorize('❗️ Nothing to clean', ColorKeys.GREEN));
     process.exit(0);
   }
 };
@@ -100,10 +100,10 @@ const removeTagsWithBatch = (tagsList: string[], batchSize = 10) => {
 const orderedTags = orderTags(getTagsList());
 
 if (isDryMode) {
-  console.info(colorize(`ℹ️  ${orderedTags.otherTags.length} tags to be removed`, colorKeys.yellow));
+  console.info(colorize(`ℹ️  ${orderedTags.otherTags.length} tags to be removed`, ColorKeys.YELLOW));
 
   if (orderedTags.otherTags.length && copyToClipboard(orderedTags.otherTags.join('\n'))) {
-    console.info(colorize('✅ Tags list copied to clipboard', colorKeys.green));
+    console.info(colorize('✅ Tags list copied to clipboard', ColorKeys.GREEN));
   }
 }
 else {

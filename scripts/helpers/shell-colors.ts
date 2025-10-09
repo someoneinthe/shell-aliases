@@ -1,29 +1,31 @@
 /**
  * @description Add colors to shell output
  */
-export enum colorKeys {
-  blue = 'blue',
-  default = 'default',
-  green = 'green',
-  red = 'red',
-  white = 'white',
-  yellow = 'yellow',
+export enum ColorKeys {
+  BLUE = 'blue',
+  DEFAULT = 'default',
+  GREEN = 'green',
+  RED = 'red',
+  WHITE = 'white',
+  YELLOW = 'yellow',
 }
 
-const shellColors: Partial<Record<colorKeys, string>> = {
-  [colorKeys.default]: '\u001B[0;39m',
-  [colorKeys.blue]: '\u001B[0;34m',
-  [colorKeys.green]: '\u001B[0;32m',
-  [colorKeys.red]: '\u001B[0;31m',
-  [colorKeys.white]: '\u001B[0;97m',
-  [colorKeys.yellow]: '\u001B[0;93m',
+const shellColors: Record<ColorKeys, string> = {
+  [ColorKeys.DEFAULT]: '\u001B[0m',
+  [ColorKeys.BLUE]: '\u001B[0;34m',
+  [ColorKeys.GREEN]: '\u001B[0;32m',
+  [ColorKeys.RED]: '\u001B[0;31m',
+  [ColorKeys.WHITE]: '\u001B[0;97m',
+  [ColorKeys.YELLOW]: '\u001B[0;33m',
 };
+
+const isColorKey = (key: string): key is ColorKeys => Object.values(ColorKeys).includes(key as ColorKeys);
 
 /**
  * @description Output shell data with given color
  */
-export const colorize = (message: string, color: colorKeys = colorKeys.default): string => {
-  const colorToDisplay = shellColors[color] ?? shellColors.default;
+export const colorize = (message: string, color: ColorKeys | string = ColorKeys.DEFAULT): string => {
+  const colorToDisplay = isColorKey(color) ? shellColors[color] : color;
 
   return `${colorToDisplay}${message}${shellColors.default}`;
 };
