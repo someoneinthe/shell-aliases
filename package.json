@@ -23,15 +23,15 @@
     "eslint": "^9.x",
     "eslint-plugin-import": "^2.x",
     "eslint-plugin-n": "^17.x",
-    "eslint-plugin-perfectionist": "^4.x",
+    "eslint-plugin-perfectionist": "^5.x",
     "eslint-plugin-promise": "^7.x",
     "eslint-plugin-sort-keys-shorthand": "^3.x",
     "eslint-plugin-unicorn": "^62.x",
-    "globals": "^16.x",
+    "globals": "^17.x",
     "husky": "^9.x",
     "typescript-eslint": "^8.x"
   },
   "engines": {
-    "node": ">=22.16"
+    "node": ">=24"
   }
 }
