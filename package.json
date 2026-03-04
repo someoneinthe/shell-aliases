@@ -26,7 +26,7 @@
     "eslint-plugin-perfectionist": "^5.x",
     "eslint-plugin-promise": "^7.x",
     "eslint-plugin-sort-keys-shorthand": "^3.x",
-    "eslint-plugin-unicorn": "^62.x",
+    "eslint-plugin-unicorn": "^63.x",
     "globals": "^17.x",
     "husky": "^9.x",
     "typescript-eslint": "^8.x"
