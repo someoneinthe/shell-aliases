@@ -5,7 +5,7 @@ import {
   getCurrentBranchName,
   getTagsList,
   getUncommittedFilesList,
-  gitTagFormat,
+  gitSemVersionTagFormat,
   rebaseLocaleBranch,
   switchLocalBranch,
 } from '../helpers/git';
@@ -104,7 +104,7 @@ const {releasePrefix} = await prompts({
 }) as {releasePrefix: string};
 
 const lastTagForPrefix = getTagsList()
-  .find(currentTag => gitTagFormat.test(currentTag) && currentTag.startsWith(releasePrefix));
+  .find(currentTag => gitSemVersionTagFormat.test(currentTag) && currentTag.startsWith(releasePrefix));
 
 if (lastTagForPrefix) {
   console.info(`ℹ️ Last tag for ${colorize(releasePrefix, ColorKeys.YELLOW)} was ${colorize(lastTagForPrefix, ColorKeys.YELLOW)}`);

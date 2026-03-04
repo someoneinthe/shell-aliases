@@ -1,7 +1,7 @@
 import {execSync} from 'node:child_process';
 import prompts from 'prompts';
 import {copyToClipboard} from './helpers/clipboard';
-import {getTagsList, gitTagFormat} from './helpers/git';
+import {getTagsList, gitSemVersionTagFormat} from './helpers/git';
 import {colorize, ColorKeys} from './helpers/shell-colors';
 
 const [, , dryMode] = process.argv;
@@ -38,7 +38,7 @@ const orderTags = (tagsList: string[]) => tagsList.reduce((accumulator: {
   otherTags: string[];
   versionTags: string[];
 }, currentTag) => {
-  const isVersionTag = gitTagFormat.test(currentTag);
+  const isVersionTag = gitSemVersionTagFormat.test(currentTag);
 
   if (!isVersionTag) {
     console.log(currentTag);

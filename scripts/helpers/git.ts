@@ -1,8 +1,8 @@
 import {execSync, ExecSyncOptionsWithStringEncoding} from 'node:child_process';
 import {colorize, ColorKeys} from './shell-colors';
 
-// Check 1.1234.12a, or backoffice-1.2.3a tag format
-export const gitTagFormat = /^([a-z-]+-)?(?:\d{1,4}\.){2}\d{1,2}[a-z]?$/gi;
+// Check 1.1234.12a, or backoffice-1.2.3a, or v1.2.3 tag format. DO NOT ADD 'global (/g)' flag, it leads to false results
+export const gitSemVersionTagFormat = /^(([a-z-]+-)|v)?(?:\d{1,4}\.){2}\d{1,2}[a-z]?$/;
 
 export const fetchBranches = (): void => {
   try {

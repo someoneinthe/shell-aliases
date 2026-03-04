@@ -1,6 +1,6 @@
 import {execSync} from 'node:child_process';
 import {copyToClipboard} from '../helpers/clipboard';
-import {getTagsList, gitTagFormat} from '../helpers/git';
+import {getTagsList, gitSemVersionTagFormat} from '../helpers/git';
 import {getCleanArguments} from '../helpers/process';
 import {colorize, ColorKeys} from '../helpers/shell-colors';
 
@@ -27,7 +27,7 @@ const getTagsToCompare = () => {
   else {
     console.info(colorize('ℹ️  You didn\'t provide a tag range, we will use the last 2 tags to generate the changelog', ColorKeys.YELLOW));
     // get last 20 tags (more than we need to be sure to exclude test tags)
-    const lastTagsList = getTagsList().filter(currentTag => gitTagFormat.test(currentTag));
+    const lastTagsList = getTagsList().filter(currentTag => gitSemVersionTagFormat.test(currentTag));
 
     const [toTags, fromTags] = lastTagsList.slice(0, 2);
 
