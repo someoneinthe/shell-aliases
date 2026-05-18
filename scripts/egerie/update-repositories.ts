@@ -14,20 +14,26 @@ import {colorize, ColorKeys} from '../helpers/shell-colors';
 const BASE_REPO = 'unified-dev-stack';
 
 // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-const baseRepositoryPath = path.resolve(process.env.WORKSPACE!, BASE_REPO);
+const workspacePath = path.resolve(process.env.WORKSPACE!);
+const baseRepositoryPath = path.resolve(workspacePath, BASE_REPO);
 
-const repositoriesList = [baseRepositoryPath];
+const repositoriesList: string[] = [];
 
-const subRepoList = readdirSync(baseRepositoryPath, {withFileTypes: true})
-  // keep only not hidden folders
-  .filter(fileOrDirectory => !fileOrDirectory.name.startsWith('.') && fileOrDirectory.isDirectory())
-  .map(({name}) => name)
-  // keep if it's a git repository
-  .filter(directory => existsSync(path.resolve(baseRepositoryPath, directory, '.git')))
-  // add full path
-  .map(directory => path.resolve(baseRepositoryPath, directory));
+const getSubRepoList = (currentPath: string) => {
+  const subRepoList = readdirSync(currentPath, {withFileTypes: true})
+    // keep only not hidden folders
+    .filter(fileOrDirectory => !fileOrDirectory.name.startsWith('.') && fileOrDirectory.isDirectory())
+    .map(({name}) => name)
+    // keep if it's a git repository
+    .filter(directory => existsSync(path.resolve(currentPath, directory, '.git')))
+    // add full path
+    .map(directory => path.resolve(currentPath, directory));
 
-repositoriesList.push(...subRepoList);
+  repositoriesList.push(...subRepoList);
+};
+
+getSubRepoList(baseRepositoryPath);
+getSubRepoList(workspacePath);
 
 for (const repository of repositoriesList) {
   // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
