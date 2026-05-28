@@ -8,6 +8,7 @@ import {
   getUncommittedFilesList,
   rebaseLocaleBranch,
   switchLocalBranch,
+  updateSubmodules,
 } from '../helpers/git';
 import {colorize, ColorKeys} from '../helpers/shell-colors';
 
@@ -35,37 +36,64 @@ const getSubRepoList = (currentPath: string) => {
 getSubRepoList(baseRepositoryPath);
 getSubRepoList(workspacePath);
 
-for (const repository of repositoriesList) {
+const errors: {message: string; repository: string}[] = [];
+
+const processRepository = async (repository: string): Promise<void> => {
   // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-  console.info(`${colorize('Processing', ColorKeys.GREEN)} ${colorize(repository.split('/').at(-1)!, ColorKeys.YELLOW)}`);
+  const repositoryName = repository.split('/').at(-1)!;
+  console.info(`${colorize('Processing', ColorKeys.GREEN)} ${colorize(repositoryName, ColorKeys.YELLOW)}`);
 
   process.chdir(repository);
 
-  fetchBranches();
+  try {
+    fetchBranches();
 
-  // Check if there are uncommitted files
-  if (getUncommittedFilesList().length) {
-    console.error('❗ Your branch has uncommitted files. This repository has been fetched, but branch will not be rebased');
-    break;
-  }
+    // Check if there are uncommitted files
+    if (getUncommittedFilesList().length) {
+      const message = 'Your branch has uncommitted files. This repository has been fetched, but branch will not be rebased';
+      console.error(`❗ ${message}`);
+      errors.push({message, repository: repositoryName});
+      return;
+    }
 
-  const currentBranch = getCurrentBranchName();
+    const currentBranch = getCurrentBranchName();
 
-  // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-  const mainBranchName = getLocalBranchesList().find(branchName => ['main', 'master'].includes(branchName))!;
+    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+    const mainBranchName = getLocalBranchesList().find(branchName => ['main', 'master'].includes(branchName))!;
 
-  if (currentBranch !== mainBranchName) {
-    const {willSwitch} = await prompts({
-      initial: true,
-      message: `${colorize('You are on the branch', ColorKeys.YELLOW)} ${colorize(currentBranch, ColorKeys.GREEN)}${colorize(', do you want to switch branch before?', ColorKeys.YELLOW)}`,
-      name: 'willSwitch',
-      type: 'confirm',
-    }) as {willSwitch: boolean};
+    if (currentBranch !== mainBranchName) {
+      const {willSwitch} = await prompts({
+        initial: true,
+        message: `${colorize('You are on the branch', ColorKeys.YELLOW)} ${colorize(currentBranch, ColorKeys.GREEN)}${colorize(', do you want to switch branch before?', ColorKeys.YELLOW)}`,
+        name: 'willSwitch',
+        type: 'confirm',
+      }) as {willSwitch: boolean};
 
-    if (willSwitch) {
-      switchLocalBranch(mainBranchName);
+      if (willSwitch) {
+        switchLocalBranch(mainBranchName);
+      }
+    }
+
+    rebaseLocaleBranch({branchName: currentBranch, willDisplayInformation: false});
+
+    if (existsSync(path.resolve(repository, '.gitmodules'))) {
+      updateSubmodules();
     }
   }
+  catch (error) {
+    const message = error instanceof Error ? error.message : String(error);
+    console.error(`❗ ${message}`);
+    errors.push({message, repository: repositoryName});
+  }
+};
 
-  rebaseLocaleBranch({branchName: currentBranch, willDisplayInformation: false});
+for (const repository of repositoriesList) {
+  await processRepository(repository);
+}
+
+if (errors.length) {
+  console.info(`\n${colorize('Errors encountered:', ColorKeys.RED)}`);
+  for (const {repository, message} of errors) {
+    console.info(`  ${colorize(repository, ColorKeys.YELLOW)}: ${message}`);
+  }
 }

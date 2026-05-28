@@ -9,8 +9,7 @@ export const fetchBranches = (): void => {
     execSync('git fetch -p').toString();
   }
   catch {
-    console.log(colorize('❗️ Can\'t fetch remotes branches.', ColorKeys.RED));
-    process.exit(1);
+    throw new Error('Can\'t fetch remotes branches.');
   }
 };
 
@@ -23,8 +22,7 @@ export const getRemoteBranchesList = (): string[] => {
       .split('\n');
   }
   catch {
-    console.log(colorize('❗️ Can\'t list remotes branches.', ColorKeys.RED));
-    process.exit(1);
+    throw new Error('Can\'t list remotes branches.');
   }
 };
 
@@ -41,8 +39,7 @@ export const switchLocalBranch = (branchToSwitch: string): void => {
     execSync(`git switch ${branchToSwitch}`);
   }
   catch {
-    console.info(colorize(`❗️ Can't switch to branch ${branchToSwitch}, maybe you should stash your work first`, ColorKeys.RED));
-    process.exit(1);
+    throw new Error(`Can't switch to branch ${branchToSwitch}, maybe you should stash your work first`);
   }
 };
 
@@ -57,8 +54,7 @@ export const getLocalBranchesList = (willKeepAllBranches = true): string[] => {
       .filter(branchName => !!branchName);
   }
   catch {
-    console.log(colorize('❗️ Can\'t get locale branches', ColorKeys.RED));
-    process.exit(1);
+    throw new Error('Can\'t get locale branches');
   }
 };
 
@@ -67,8 +63,7 @@ export const getCurrentBranchName = (): string => {
     return execSync('git rev-parse --abbrev-ref HEAD').toString().trim();
   }
   catch {
-    console.log(colorize('❗️ Can\'t get current branch.', ColorKeys.RED));
-    process.exit(1);
+    throw new Error('Can\'t get current branch.');
   }
 };
 
@@ -84,6 +79,28 @@ export const getTagsList = (): string[] => {
 
 export const createAndPushTag = (tagName: string): void => {
   execSync(`git tag ${tagName} && git push origin ${tagName}`).toString();
+};
+
+export const updateSubmodules = (): void => {
+  try {
+    execSync('git submodule update --init --recursive').toString();
+  }
+  catch {
+    throw new Error('Can\'t update submodules.');
+  }
+};
+
+export const getSubmodulePaths = (): string[] => {
+  try {
+    const output = execSync('git submodule foreach --recursive --quiet pwd').toString().trim();
+    if (!output) {
+      return [];
+    }
+    return output.split('\n').map(line => line.trim()).filter(Boolean);
+  }
+  catch {
+    return [];
+  }
 };
 
 export const rebaseLocaleBranch = ({branchName, willDisplayInformation = true}: {branchName: string; willDisplayInformation?: boolean}): void => {
