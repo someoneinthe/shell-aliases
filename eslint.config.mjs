@@ -1,6 +1,6 @@
 import eslint from '@eslint/js';
 import eslintPluginStylistic from '@stylistic/eslint-plugin';
-import eslintPluginImport from 'eslint-plugin-import';
+import eslintPluginImport from 'eslint-plugin-import-x';
 import eslintPluginN from 'eslint-plugin-n';
 import eslintPluginPerfectionist from 'eslint-plugin-perfectionist';
 import eslintPluginSortKeysShorthand from 'eslint-plugin-sort-keys-shorthand';
@@ -45,7 +45,7 @@ export default defineConfig(
     },
     plugins: {
       '@stylistic': eslintPluginStylistic,
-      import: eslintPluginImport,
+      'import-x': eslintPluginImport,
       'sort-keys-shorthand': eslintPluginSortKeysShorthand,
     },
     rules: {
@@ -166,7 +166,7 @@ export default defineConfig(
       'unicorn/prefer-module': 'error',
     },
     settings: {
-      'import/resolver': {
+      'import-x/resolver': {
         node: true,
       },
     },
