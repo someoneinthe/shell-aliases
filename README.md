@@ -17,7 +17,7 @@ node files to be run in shell to help you for some commands
 For these scripts to work, you need to have the following installed on your machine:
 
 - `node`: lts or most recent
-- `yarn` (or `npm` should work too): any version
+- `npm`: any version
 - `git`: 2.23.0 or most recent
 
 ## Installation
@@ -25,13 +25,13 @@ For these scripts to work, you need to have the following installed on your mach
 You will have to install dependencies in the root directory of this repository, then compile the files.
 
 ```bash
-yarn install --production
+npm install --omit=dev
 ```
 
 A 'postinstall' script is automatically run to compile the typescript files. You can also build manually with:
 
 ```bash
-yarn build
+npm run build
 ````
 
 ## Usage

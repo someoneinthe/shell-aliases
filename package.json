@@ -2,26 +2,26 @@
   "name": "shell-alias",
   "version": "2.0.1",
   "scripts": {
-    "build": "tsc && yarn ts-add-js-extension --dir=dist",
-    "postinstall": "yarn build",
+    "build": "tsc && ts-add-js-extension --dir=dist",
+    "postinstall": "npm run build",
     "lint-code": "eslint .",
     "prepare": "husky"
   },
   "private": true,
   "type": "module",
   "dependencies": {
-    "@types/node": "^24.10.1",
+    "@types/node": "^24.13.2",
     "@types/prompts": "^2.4.9",
     "prompts": "^2.4.2",
     "ts-add-js-extension": "^1.6.6",
-    "tsx": "^4.20.6",
-    "typescript": "^5.9.3"
+    "tsx": "^4.22.4",
+    "typescript": "^6.0.3"
   },
   "devDependencies": {
-    "@eslint/js": "^9.x",
+    "@eslint/js": "^10.x",
     "@stylistic/eslint-plugin": "^5.x",
-    "eslint": "^9.x",
-    "eslint-plugin-import": "^2.x",
+    "eslint": "^10.x",
+    "eslint-plugin-import-x": "^4.x",
     "eslint-plugin-n": "^17.x",
     "eslint-plugin-perfectionist": "^5.x",
     "eslint-plugin-promise": "^7.x",

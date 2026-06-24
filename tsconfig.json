@@ -1,11 +1,11 @@
 {
   "compilerOptions": {
-    "allowSyntheticDefaultImports": true,
-    "esModuleInterop": false,
+    "esModuleInterop": true,
     "forceConsistentCasingInFileNames": true,
     "module": "esnext",
-    "moduleResolution": "node",
+    "moduleResolution": "bundler",
     "outDir": "dist",
+    "rootDir": "scripts",
     "skipLibCheck": true,
     "strict": true,
     "target": "esnext"
