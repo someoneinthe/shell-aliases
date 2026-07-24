@@ -49,6 +49,8 @@ export const getLocalBranchesList = (willKeepAllBranches = true): string[] => {
       .trim()
       .split('\n')
       .filter(rawLine => willKeepAllBranches || rawLine.includes(': gone]'))
+      // worktrees branches => ignore
+      .filter(rawLine => !rawLine.startsWith('+'))
       // trim, remove the '*' selector for current branch, and return the branch name
       .map(line => line.trim().replace(/^\*\s+/, '').replace(/\s.*/, ''))
       .filter(branchName => !!branchName);
