@@ -11,12 +11,12 @@ export enum ColorKeys {
 }
 
 const shellColors: Record<ColorKeys, string> = {
-  [ColorKeys.DEFAULT]: '\u001B[0m',
-  [ColorKeys.BLUE]: '\u001B[0;34m',
-  [ColorKeys.GREEN]: '\u001B[0;32m',
-  [ColorKeys.RED]: '\u001B[0;31m',
-  [ColorKeys.WHITE]: '\u001B[0;97m',
-  [ColorKeys.YELLOW]: '\u001B[0;33m',
+  [ColorKeys.DEFAULT]: '\u{1B}[0m',
+  [ColorKeys.BLUE]: '\u{1B}[0;34m',
+  [ColorKeys.GREEN]: '\u{1B}[0;32m',
+  [ColorKeys.RED]: '\u{1B}[0;31m',
+  [ColorKeys.WHITE]: '\u{1B}[0;97m',
+  [ColorKeys.YELLOW]: '\u{1B}[0;33m',
 };
 
 const isColorKey = (key: string): key is ColorKeys => Object.values(ColorKeys).includes(key as ColorKeys);

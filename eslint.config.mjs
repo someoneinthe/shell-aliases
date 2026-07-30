@@ -1,5 +1,6 @@
 import eslint from '@eslint/js';
 import eslintPluginStylistic from '@stylistic/eslint-plugin';
+import eslintPackageJson from 'eslint-package-json';
 import eslintPluginImport from 'eslint-plugin-import-x';
 import eslintPluginN from 'eslint-plugin-n';
 import eslintPluginPerfectionist from 'eslint-plugin-perfectionist';
@@ -13,17 +14,21 @@ export default defineConfig(
   {
     ignores: ['node_modules/', 'dist/'],
   },
-  eslint.configs.recommended,
-  typescriptEslint.configs.recommended,
-  typescriptEslint.configs.strict,
-  typescriptEslint.configs.stylistic,
-  typescriptEslint.configs.strictTypeChecked,
-  typescriptEslint.configs.stylisticTypeChecked,
-  eslintPluginStylistic.configs.all,
-  eslintPluginUnicorn.configs.recommended,
-  eslintPluginPerfectionist.configs['recommended-natural'],
-  eslintPluginN.configs['flat/recommended'],
   {
+    // javascript & typescript sources, scoped so their rules never reach non-js languages such as json
+    extends: [
+      eslint.configs.recommended,
+      typescriptEslint.configs.recommended,
+      typescriptEslint.configs.strict,
+      typescriptEslint.configs.stylistic,
+      typescriptEslint.configs.strictTypeChecked,
+      typescriptEslint.configs.stylisticTypeChecked,
+      eslintPluginStylistic.configs.all,
+      eslintPluginUnicorn.configs.recommended,
+      eslintPluginPerfectionist.configs['recommended-natural'],
+      eslintPluginN.configs['flat/recommended'],
+    ],
+    files: ['**/*.ts', '**/*.mjs'],
     languageOptions: {
       ecmaVersion: 'latest',
       globals: {
@@ -159,8 +164,10 @@ export default defineConfig(
         },
       ],
       'unicorn/explicit-length-check': 'off',
-      'unicorn/no-array-for-each': 'off',
+      // `repository` is spelled out on purpose across the scripts, don't shorten it to `repo`
+      'unicorn/name-replacements': ['error', {replacements: {repository: false}}],
       'unicorn/no-array-reduce': 'warn',
+      'unicorn/no-for-each': 'off',
       'unicorn/no-process-exit': 'off',
       'unicorn/no-unreadable-array-destructuring': 'off',
       'unicorn/prefer-module': 'error',
@@ -179,6 +186,18 @@ export default defineConfig(
       '@typescript-eslint/no-unsafe-assignment': 'off',
       '@typescript-eslint/no-unsafe-call': 'off',
       '@typescript-eslint/no-unsafe-member-access': 'off',
+    },
+  },
+  {
+    // package.json manifest
+    extends: ['package-json/recommended'],
+    files: ['**/package.json'],
+    plugins: {
+      'package-json': eslintPackageJson,
+    },
+    rules: {
+      // this repository is private and never published, and `postinstall` is how `dist/` gets built on install
+      'package-json/no-install-scripts': 'off',
     },
   },
 );
