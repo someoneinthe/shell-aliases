@@ -7,31 +7,21 @@ import {colorize, ColorKeys} from './helpers/shell-colors';
 const [, , dryMode] = process.argv;
 const isDryMode = ['--dry', 'true', true].includes(dryMode);
 
-if (isDryMode) {
-  const {willSwitch} = await prompts({
-    initial: true,
-    message: colorize('⚠️  You are running the script in dry mode. This won\'t erase any tag, just list the tags to be removed', ColorKeys.YELLOW),
-    name: 'willSwitch',
-    type: 'confirm',
-  }) as {willSwitch: boolean};
-
-  if (!willSwitch) {
-    process.exit(0);
-  }
-}
-else {
+if (!isDryMode) {
   console.log(colorize('❗️ You didn\'t provide dry mode argument. Tags will be removed', ColorKeys.RED));
+}
 
-  const {willSwitch} = await prompts({
-    initial: false,
-    message: 'Are you sure you want to proceed?',
-    name: 'willSwitch',
-    type: 'confirm',
-  }) as {willSwitch: boolean};
+const {willSwitch} = await prompts({
+  initial: isDryMode,
+  message: isDryMode
+    ? colorize('⚠️  You are running the script in dry mode. This won\'t erase any tag, just list the tags to be removed', ColorKeys.YELLOW)
+    : 'Are you sure you want to proceed?',
+  name: 'willSwitch',
+  type: 'confirm',
+}) as {willSwitch: boolean};
 
-  if (!willSwitch) {
-    process.exit(0);
-  }
+if (!willSwitch) {
+  process.exit(0);
 }
 
 const orderTags = (tagsList: string[]) => tagsList.reduce((accumulator: {

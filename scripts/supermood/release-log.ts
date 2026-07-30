@@ -23,16 +23,15 @@ const getTagsToCompare = () => {
     console.info(colorize('ℹ️  You provided a tag range, we will use it to generate the changelog', ColorKeys.YELLOW));
     return {from, to};
   }
+
   // we need to search within tags list to get last 2 tags
-  else {
-    console.info(colorize('ℹ️  You didn\'t provide a tag range, we will use the last 2 tags to generate the changelog', ColorKeys.YELLOW));
-    // get last 20 tags (more than we need to be sure to exclude test tags)
-    const lastTagsList = getTagsList().filter(currentTag => gitSemVersionTagFormat.test(currentTag));
+  console.info(colorize('ℹ️  You didn\'t provide a tag range, we will use the last 2 tags to generate the changelog', ColorKeys.YELLOW));
+  // get last 20 tags (more than we need to be sure to exclude test tags)
+  const lastTagsList = getTagsList().filter(currentTag => gitSemVersionTagFormat.test(currentTag));
 
-    const [toTags, fromTags] = lastTagsList.slice(0, 2);
+  const [toTags, fromTags] = lastTagsList.slice(0, 2);
 
-    return {from: from ?? fromTags, to: to ?? toTags};
-  }
+  return {from: from ?? fromTags, to: to ?? toTags};
 };
 
 /**
