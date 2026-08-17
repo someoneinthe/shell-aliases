@@ -26,7 +26,7 @@ Entry-point scripts (run as aliases) and their alias mapping in `.source.sh` (`n
 
 Shared helpers live in `scripts/helpers/`:
 
-- `git.ts` — `execSync` git wrappers: `fetchBranches` (`git fetch -p`), `getRemoteBranchesList`, `getUncommittedFilesList`, `switchLocalBranch`, `getLocalBranchesList`, `getCurrentBranchName`, `getTagsList`, `createAndPushTag`, `updateSubmodules`, `getSubmodulePaths`, `isWorktree` (compares `--git-dir` with `--git-common-dir`), `rebaseLocaleBranch` (auto-aborts on conflict); also exports `gitSemVersionTagFormat` regex.
+- `git.ts` — `execSync` git wrappers: `fetchBranches` (`git fetch -p`), `getRemoteBranchesList`, `getUncommittedFilesList`, `switchLocalBranch`, `getLocalBranchesList`, `getCurrentBranchName`, `getTagsList`, `createAndPushTag`, `updateSubmodules`, `getSubmodulePaths`, `isWorktree` (reads the `.git` file target: `worktrees/` = linked worktree, `modules/` = submodule), `rebaseLocaleBranch` (auto-aborts on conflict); also exports `gitSemVersionTagFormat` regex.
 - `clipboard.ts` — `copyToClipboard(text)` via `pbcopy`/`xclip`/`clip`.
 - `shell-colors.ts` — `ColorKeys` enum + `colorize(message, color)` (ANSI escapes).
 - `process.ts` — `getCleanArguments()` parses `process.argv` into a `Record<string, string>` of `key=value` tokens (for `from=`/`to=` style args).
