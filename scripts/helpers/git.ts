@@ -1,4 +1,6 @@
 import {execSync, ExecSyncOptionsWithStringEncoding} from 'node:child_process';
+import {existsSync, readFileSync, statSync} from 'node:fs';
+import path from 'node:path';
 import {colorize, ColorKeys} from './shell-colors';
 
 // Check 1.1234.12a, or backoffice-1.2.3a, or v1.2.3 tag format. DO NOT ADD 'global (/g)' flag, it leads to false results
@@ -103,6 +105,20 @@ export const getSubmodulePaths = (): string[] => {
   catch {
     return [];
   }
+};
+
+export const isWorktree = (repositoryPath: string): boolean => {
+  const gitPath = path.resolve(repositoryPath, '.git');
+
+  // a regular repository has a '.git' directory, only linked worktrees and submodules have a '.git' file
+  if (!existsSync(gitPath) || !statSync(gitPath).isFile()) {
+    return false;
+  }
+
+  // a worktree '.git' file targets '<main repository>/.git/worktrees/<name>', a submodule one targets '.git/modules/<name>'
+  const gitDirectory = readFileSync(gitPath, 'utf8').trim().replace(/^gitdir:\s*/, '');
+
+  return path.basename(path.dirname(gitDirectory)) === 'worktrees';
 };
 
 export const rebaseLocaleBranch = ({branchName, willDisplayInformation = true}: {branchName: string; willDisplayInformation?: boolean}): void => {

@@ -6,6 +6,7 @@ import {
   getCurrentBranchName,
   getLocalBranchesList,
   getUncommittedFilesList,
+  isWorktree,
   rebaseLocaleBranch,
   switchLocalBranch,
   updateSubmodules,
@@ -28,7 +29,9 @@ const getSubRepoList = (currentPath: string) => {
     // keep if it's a git repository
     .filter(directory => existsSync(path.resolve(currentPath, directory, '.git')))
     // add full path
-    .map(directory => path.resolve(currentPath, directory));
+    .map(directory => path.resolve(currentPath, directory))
+    // worktrees are updated through their main repository => ignore
+    .filter(directory => !isWorktree(directory));
 
   repositoriesList.push(...subRepoList);
 };
