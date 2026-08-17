@@ -105,6 +105,20 @@ export const getSubmodulePaths = (): string[] => {
   }
 };
 
+export const isWorktree = (repositoryPath: string): boolean => {
+  try {
+    // in a linked worktree, the git directory is a child of the shared common one, so both paths differ
+    const [gitDirectory, commonGitDirectory] = execSync('git rev-parse --git-dir --git-common-dir', {cwd: repositoryPath}).toString()
+      .trim()
+      .split('\n', 2);
+
+    return gitDirectory !== commonGitDirectory;
+  }
+  catch {
+    return false;
+  }
+};
+
 export const rebaseLocaleBranch = ({branchName, willDisplayInformation = true}: {branchName: string; willDisplayInformation?: boolean}): void => {
   const outputOptions: Partial<ExecSyncOptionsWithStringEncoding> = willDisplayInformation ? {} : {stdio: 'pipe'};
 

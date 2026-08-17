@@ -26,7 +26,7 @@ Entry-point scripts (run as aliases) and their alias mapping in `.source.sh` (`n
 
 Shared helpers live in `scripts/helpers/`:
 
-- `git.ts` — `execSync` git wrappers: `fetchBranches` (`git fetch -p`), `getRemoteBranchesList`, `getUncommittedFilesList`, `switchLocalBranch`, `getLocalBranchesList`, `getCurrentBranchName`, `getTagsList`, `createAndPushTag`, `updateSubmodules`, `getSubmodulePaths`, `rebaseLocaleBranch` (auto-aborts on conflict); also exports `gitSemVersionTagFormat` regex.
+- `git.ts` — `execSync` git wrappers: `fetchBranches` (`git fetch -p`), `getRemoteBranchesList`, `getUncommittedFilesList`, `switchLocalBranch`, `getLocalBranchesList`, `getCurrentBranchName`, `getTagsList`, `createAndPushTag`, `updateSubmodules`, `getSubmodulePaths`, `isWorktree` (compares `--git-dir` with `--git-common-dir`), `rebaseLocaleBranch` (auto-aborts on conflict); also exports `gitSemVersionTagFormat` regex.
 - `clipboard.ts` — `copyToClipboard(text)` via `pbcopy`/`xclip`/`clip`.
 - `shell-colors.ts` — `ColorKeys` enum + `colorize(message, color)` (ANSI escapes).
 - `process.ts` — `getCleanArguments()` parses `process.argv` into a `Record<string, string>` of `key=value` tokens (for `from=`/`to=` style args).
@@ -78,7 +78,7 @@ Most entry scripts mutate git/fs state. Do NOT run these casually:
 
 - **`clean-local-branches.js` (cleanLocalBranches) — DESTRUCTIVE.** Force-deletes (`git branch -d -f`) every local branch whose upstream is gone, in the current repo AND recursively in every submodule. No confirmation prompt, no args.
 - **`git-tags-clean.js` (gitCleanTags) — DESTRUCTIVE (remote + local).** Deletes non-semver tags via `git push origin :refs/tags/...` and `git tag -d`. Always pass `--dry` (or `true`) first to only list/preview; the no-arg path prompts once (default No) then deletes.
-- **`egerie/update-repositories.js` (updateRepositories) — mass mutation.** Reads `$WORKSPACE` via a non-null assertion (crashes if unset); fetches and rebases the current branch and updates submodules across EVERY git repo under `$WORKSPACE` and `$WORKSPACE/unified-dev-stack`.
+- **`egerie/update-repositories.js` (updateRepositories) — mass mutation.** Reads `$WORKSPACE` via a non-null assertion (crashes if unset); fetches and rebases the current branch and updates submodules across EVERY git repo under `$WORKSPACE` and `$WORKSPACE/unified-dev-stack` (linked worktrees are skipped).
 - **`supermood/create-release.js` — VERY DESTRUCTIVE / publishing.** Creates and pushes a release tag (`git tag && git push origin`) — irreversible. Intentionally commented out in `.source.sh`.
 - `git-switch-branch.js` (gswitch) — side-effecting but low-risk: fetches and `git switch`, no deletion. Requires a branch-name substring arg.
 - `supermood/release-log.js` — read-only (Slack changelog via `git log`), though `getTagsList`/`getRemoteBranchesList` silently run `git fetch -p`.
