@@ -33,8 +33,6 @@ const availableVersionTypes = [
   'patch',
 ];
 
-const releaseBranch = 'master';
-
 const getNextVersion = (releasePrefix: string, releaseType: string, lastReleasedTag?: string) => {
   // no previous version, start from 1.0.0
   if (!lastReleasedTag) {
@@ -73,6 +71,8 @@ if (getUncommittedFilesList().length) {
   console.error('❗ Your branch has uncommitted files. Please commit or stash them before creating a release');
   process.exit(0);
 }
+
+const releaseBranch = 'master';
 
 // Switch current branch if necessary
 if (getCurrentBranchName() !== releaseBranch) {
