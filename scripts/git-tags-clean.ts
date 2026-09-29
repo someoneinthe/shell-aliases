@@ -24,7 +24,7 @@ if (!willSwitch) {
 }
 
 const orderTags = (tagsList: string[]) => {
-  const orderedTags: {otherTags: string[]; versionTags: string[]} = {
+  const tagsByType: {otherTags: string[]; versionTags: string[]} = {
     otherTags: [],
     versionTags: [],
   };
@@ -36,10 +36,10 @@ const orderTags = (tagsList: string[]) => {
       console.log(currentTag);
     }
 
-    orderedTags[isVersionTag ? 'versionTags' : 'otherTags'].push(currentTag);
+    tagsByType[isVersionTag ? 'versionTags' : 'otherTags'].push(currentTag);
   }
 
-  return orderedTags;
+  return tagsByType;
 };
 
 const removeTagsWithBatch = (tagsList: string[], batchSize = 10) => {

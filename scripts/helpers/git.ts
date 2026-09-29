@@ -11,7 +11,7 @@ export const gitSemVersionTagFormat = /^(([a-z-]+-)|v)?(?:\d{1,4}\.){2}\d{1,2}[a
  * they are placed after `--end-of-options`, so git never parses them as options.
  * 'git' is resolved from the user's PATH on purpose: these scripts are local CLI helpers run by the user in their own shell.
  */
-export const execGit = ({options = [], values = []}: {options?: string[]; values?: string[]}, execOptions: ExecFileSyncOptions = {}): string => execFileSync('git', [...options, '--end-of-options', ...values], execOptions).toString(); // NOSONAR
+export const execGit = ({options = [], values = []}: {options?: string[]; values?: string[]}, execOptions: ExecFileSyncOptions = {}): string => execFileSync('git', [...options, '--end-of-options', ...values], execOptions).toString();
 
 export const fetchBranches = (): void => {
   try {
