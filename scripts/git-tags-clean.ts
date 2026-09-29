@@ -1,4 +1,4 @@
-import {execSync} from 'node:child_process';
+import {execFileSync} from 'node:child_process';
 import prompts from 'prompts';
 import {copyToClipboard} from './helpers/clipboard';
 import {getTagsList, gitSemVersionTagFormat} from './helpers/git';
@@ -73,10 +73,10 @@ const removeTagsWithBatch = (tagsList: string[], batchSize = 10) => {
       console.info(`Removing batch ${index + 1} of ${tagsToRemoveBatches.length}...`);
 
       // Remote deletion
-      execSync(`git push origin :refs/tags/${batch.join(' :refs/tags/')}`);
+      execFileSync('git', ['push', 'origin', ...batch.map(tagName => `:refs/tags/${tagName}`)]);
 
       // Local deletion
-      execSync(`git tag -d ${batch.join(' ')}`);
+      execFileSync('git', ['tag', '-d', ...batch]);
     });
 
     console.info(colorize(`✅  Clean finished, removed ${tagsList.length} tags in ${tagsToRemoveBatches.length} batches of ${batchSize}`, ColorKeys.GREEN));

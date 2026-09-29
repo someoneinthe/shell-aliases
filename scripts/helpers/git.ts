@@ -1,10 +1,19 @@
-import {execSync, ExecSyncOptionsWithStringEncoding} from 'node:child_process';
+import {execFileSync, execSync, ExecSyncOptionsWithStringEncoding} from 'node:child_process';
 import {existsSync, readFileSync, statSync} from 'node:fs';
 import path from 'node:path';
 import {colorize, ColorKeys} from './shell-colors';
 
 // Check 1.1234.12a, or backoffice-1.2.3a, or v1.2.3 tag format. DO NOT ADD 'global (/g)' flag, it leads to false results
 export const gitSemVersionTagFormat = /^(([a-z-]+-)|v)?(?:\d{1,4}\.){2}\d{1,2}[a-z]?$/;
+
+/**
+ * @description Reject a git reference coming from user input if it could be interpreted as a git option
+ */
+const assertSafeReference = (reference: string): void => {
+  if (!reference || reference.startsWith('-')) {
+    throw new Error(`Invalid git reference: '${reference}'`);
+  }
+};
 
 export const fetchBranches = (): void => {
   try {
@@ -35,10 +44,11 @@ export const getUncommittedFilesList = (): string[] => execSync('git status').to
   .map(line => line.trim().replaceAll('\t', ''));
 
 export const switchLocalBranch = (branchToSwitch: string): void => {
+  assertSafeReference(branchToSwitch);
   fetchBranches();
 
   try {
-    execSync(`git switch ${branchToSwitch}`);
+    execFileSync('git', ['switch', branchToSwitch]);
   }
   catch {
     throw new Error(`Can't switch to branch ${branchToSwitch}, maybe you should stash your work first`);
@@ -63,8 +73,10 @@ export const getLocalBranchesList = (willKeepAllBranches = true): string[] => {
 };
 
 export const deleteLocalBranch = (branchName: string): string => {
+  assertSafeReference(branchName);
+
   try {
-    return execSync(`git branch -D ${branchName}`, {stdio: 'pipe'}).toString().trim();
+    return execFileSync('git', ['branch', '-D', branchName], {stdio: 'pipe'}).toString().trim();
   }
   catch {
     throw new Error(`Can't delete branch ${branchName}`);
@@ -88,10 +100,6 @@ export const getTagsList = (): string[] => {
     .split('\n')
     .filter(Boolean)
     .toReversed();
-};
-
-export const createAndPushTag = (tagName: string): void => {
-  execSync(`git tag ${tagName} && git push origin ${tagName}`).toString();
 };
 
 export const updateSubmodules = (): void => {
@@ -139,7 +147,8 @@ export const rebaseLocaleBranch = ({branchName, willDisplayInformation = true}: 
   };
 
   try {
-    execSync(`git rebase origin/${branchName}`, outputOptions).toString();
+    assertSafeReference(branchName);
+    execFileSync('git', ['rebase', `origin/${branchName}`], outputOptions);
   }
   catch {
     errors.conflict = true;
