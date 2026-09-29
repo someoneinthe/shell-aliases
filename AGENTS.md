@@ -2,7 +2,7 @@
 
 ## Project overview
 
-`shell-alias` is a collection of Node.js/TypeScript CLI scripts that act as shell aliases for git and release helpers. Source lives in `scripts/` and is compiled to `dist/` (gitignored — built on install), then wired up as shell aliases through `.source.sh`. This is an ESM project (`"type": "module"`) requiring Node >=24 (`.nvmrc` = v24). Several scripts perform destructive git/filesystem operations — read the Safety section before running anything.
+`shell-alias` is a collection of Node.js/TypeScript CLI scripts that act as shell aliases for git helpers. Source lives in `scripts/` and is compiled to `dist/` (gitignored — built on install), then wired up as shell aliases through `.source.sh`. This is an ESM project (`"type": "module"`) requiring Node >=24 (`.nvmrc` = v24). Several scripts perform destructive git/filesystem operations — read the Safety section before running anything.
 
 ## Commands
 
@@ -22,17 +22,15 @@ Entry-point scripts (run as aliases) and their alias mapping in `.source.sh` (`n
 - `gswitch` -> `dist/git-switch-branch.js` (`scripts/git-switch-branch.ts`)
 - `updateRepositories` -> `dist/egerie/update-repositories.js` (`scripts/egerie/update-repositories.ts`)
 - `cleanRepositories` -> `dist/egerie/clean-repositories.js` (`scripts/egerie/clean-repositories.ts`)
-- `supermoodGenerateRelease` -> `dist/supermood/create-release.js` and `supermoodReleaseLog` -> `dist/supermood/release-log.js` are **commented out** in `.source.sh`.
 - `gs` and `gskip` are plain git aliases, not scripts.
 
 Shared helpers live in `scripts/helpers/`:
 
-- `git.ts` — `execSync` git wrappers: `fetchBranches` (`git fetch -p`), `getRemoteBranchesList`, `getUncommittedFilesList`, `switchLocalBranch`, `getLocalBranchesList`, `deleteLocalBranch`, `getCurrentBranchName`, `getTagsList`, `createAndPushTag`, `updateSubmodules`, `getSubmodulePaths`, `isWorktree` (reads the `.git` file target: `worktrees/` = linked worktree, `modules/` = submodule), `rebaseLocaleBranch` (auto-aborts on conflict); also exports `gitSemVersionTagFormat` regex.
+- `git.ts` — git wrappers. Any command taking a (potentially user-supplied) value MUST go through `execGit({options, values})`: no shell, and `values` are placed after `--end-of-options` so git never parses them as options (fixes Sonar S8701/S8705; its single S4036 PATH finding is accepted in SonarCloud — `NOSONAR` comments are forbidden by S1291). Exports: `execGit`, `fetchBranches` (`git fetch -p`), `getRemoteBranchesList`, `getUncommittedFilesList`, `switchLocalBranch`, `getLocalBranchesList`, `deleteLocalBranch`, `getCurrentBranchName`, `getTagsList`, `updateSubmodules`, `getSubmodulePaths`, `isWorktree` (reads the `.git` file target: `worktrees/` = linked worktree, `modules/` = submodule), `rebaseLocaleBranch` (auto-aborts on conflict); also exports `gitSemVersionTagFormat` regex.
 - `egerie/helpers/repositories.ts` (egerie-specific, used by the egerie scripts) — `getGitRepositoriesList(parentPath)` (non-hidden git repos, linked worktrees skipped), `getWorkspaceRepositoriesList()` (repos under `$WORKSPACE/unified-dev-stack` then `$WORKSPACE`; throws if `WORKSPACE` is unset), `getRepositoryName`.
 - `clean-branches.ts` — `cleanGoneBranches({isDryRun})` (fetch + delete gone branches in cwd; skips the current branch and `main`/`master`), `cleanGoneBranchesWithSubmodules(repositoryPath, options)` (repo + recursive submodules, restores cwd).
 - `clipboard.ts` — `copyToClipboard(text)` via `pbcopy`/`xclip`/`clip`.
 - `shell-colors.ts` — `ColorKeys` enum + `colorize(message, color)` (ANSI escapes).
-- `process.ts` — `getCleanArguments()` parses `process.argv` into a `Record<string, string>` of `key=value` tokens (for `from=`/`to=` style args).
 
 Build pipeline: `tsconfig.json` sets `rootDir: scripts`, `outDir: dist`, so `dist/` is a flat mirror of `scripts/` (each `scripts/X.ts` -> `dist/X.js`, subdirs preserved). `tsc` compiles, then `ts-add-js-extension` rewrites relative imports to add explicit `.js` extensions (required for Node ESM). Entry scripts use top-level `await` (e.g. `prompts`), so they need an ESM-aware runner: `node` on the built `.js`, or `tsx scripts/<file>.ts` on source for dev.
 
@@ -83,9 +81,7 @@ Most entry scripts mutate git/fs state. Do NOT run these casually:
 - **`egerie/clean-repositories.js` (cleanRepositories) — DESTRUCTIVE, mass.** Same cleanup as `cleanLocalBranches`, across every repository `updateRepositories` targets. Pass `--dry` to only list.
 - **`git-tags-clean.js` (gitCleanTags) — DESTRUCTIVE (remote + local).** Deletes non-semver tags via `git push origin :refs/tags/...` and `git tag -d`. Always pass `--dry` (or `true`) first to only list/preview; the no-arg path prompts once (default No) then deletes.
 - **`egerie/update-repositories.js` (updateRepositories) — mass mutation.** Requires `$WORKSPACE` (throws if unset); fetches and rebases the current branch and updates submodules across EVERY git repo under `$WORKSPACE` and `$WORKSPACE/unified-dev-stack` (linked worktrees are skipped).
-- **`supermood/create-release.js` — VERY DESTRUCTIVE / publishing.** Creates and pushes a release tag (`git tag && git push origin`) — irreversible. Intentionally commented out in `.source.sh`.
 - `git-switch-branch.js` (gswitch) — side-effecting but low-risk: fetches and `git switch`, no deletion. Requires a branch-name substring arg.
-- `supermood/release-log.js` — read-only (Slack changelog via `git log`), though `getTagsList`/`getRemoteBranchesList` silently run `git fetch -p`.
 
 Use `tsx scripts/<file>.ts` for dev only, and with the same caution — it executes the real git/fs side effects.
 

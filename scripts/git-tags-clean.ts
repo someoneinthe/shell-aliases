@@ -1,7 +1,6 @@
-import {execSync} from 'node:child_process';
 import prompts from 'prompts';
 import {copyToClipboard} from './helpers/clipboard';
-import {getTagsList, gitSemVersionTagFormat} from './helpers/git';
+import {execGit, getTagsList, gitSemVersionTagFormat} from './helpers/git';
 import {colorize, ColorKeys} from './helpers/shell-colors';
 
 const [, , dryMode] = process.argv;
@@ -24,23 +23,24 @@ if (!willSwitch) {
   process.exit(0);
 }
 
-const orderTags = (tagsList: string[]) => tagsList.reduce((accumulator: {
-  otherTags: string[];
-  versionTags: string[];
-}, currentTag) => {
-  const isVersionTag = gitSemVersionTagFormat.test(currentTag);
+const orderTags = (tagsList: string[]) => {
+  const tagsByType: {otherTags: string[]; versionTags: string[]} = {
+    otherTags: [],
+    versionTags: [],
+  };
 
-  if (!isVersionTag) {
-    console.log(currentTag);
+  for (const currentTag of tagsList) {
+    const isVersionTag = gitSemVersionTagFormat.test(currentTag);
+
+    if (!isVersionTag) {
+      console.log(currentTag);
+    }
+
+    tagsByType[isVersionTag ? 'versionTags' : 'otherTags'].push(currentTag);
   }
 
-  accumulator[isVersionTag ? 'versionTags' : 'otherTags'].push(currentTag);
-
-  return accumulator;
-}, {
-  otherTags: [],
-  versionTags: [],
-});
+  return tagsByType;
+};
 
 const removeTagsWithBatch = (tagsList: string[], batchSize = 10) => {
   // proceed deletion only if necessary
@@ -73,10 +73,10 @@ const removeTagsWithBatch = (tagsList: string[], batchSize = 10) => {
       console.info(`Removing batch ${index + 1} of ${tagsToRemoveBatches.length}...`);
 
       // Remote deletion
-      execSync(`git push origin :refs/tags/${batch.join(' :refs/tags/')}`);
+      execGit({options: ['push', 'origin'], values: batch.map(tagName => `:refs/tags/${tagName}`)});
 
       // Local deletion
-      execSync(`git tag -d ${batch.join(' ')}`);
+      execGit({options: ['tag', '-d'], values: batch});
     });
 
     console.info(colorize(`✅  Clean finished, removed ${tagsList.length} tags in ${tagsToRemoveBatches.length} batches of ${batchSize}`, ColorKeys.GREEN));

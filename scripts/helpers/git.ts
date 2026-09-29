@@ -1,10 +1,17 @@
-import {execSync, ExecSyncOptionsWithStringEncoding} from 'node:child_process';
+import {execFileSync, ExecFileSyncOptions, execSync, ExecSyncOptionsWithStringEncoding} from 'node:child_process';
 import {existsSync, readFileSync, statSync} from 'node:fs';
 import path from 'node:path';
 import {colorize, ColorKeys} from './shell-colors';
 
 // Check 1.1234.12a, or backoffice-1.2.3a, or v1.2.3 tag format. DO NOT ADD 'global (/g)' flag, it leads to false results
 export const gitSemVersionTagFormat = /^(([a-z-]+-)|v)?(?:\d{1,4}\.){2}\d{1,2}[a-z]?$/;
+
+/**
+ * @description Run a git command without a shell. Values that may come from user input must be passed in `values`:
+ * they are placed after `--end-of-options`, so git never parses them as options.
+ * 'git' is resolved from the user's PATH on purpose: these scripts are local CLI helpers run by the user in their own shell.
+ */
+export const execGit = ({options = [], values = []}: {options?: string[]; values?: string[]}, execOptions: ExecFileSyncOptions = {}): string => execFileSync('git', [...options, '--end-of-options', ...values], execOptions).toString();
 
 export const fetchBranches = (): void => {
   try {
@@ -38,7 +45,7 @@ export const switchLocalBranch = (branchToSwitch: string): void => {
   fetchBranches();
 
   try {
-    execSync(`git switch ${branchToSwitch}`);
+    execGit({options: ['switch'], values: [branchToSwitch]});
   }
   catch {
     throw new Error(`Can't switch to branch ${branchToSwitch}, maybe you should stash your work first`);
@@ -64,7 +71,7 @@ export const getLocalBranchesList = (willKeepAllBranches = true): string[] => {
 
 export const deleteLocalBranch = (branchName: string): string => {
   try {
-    return execSync(`git branch -D ${branchName}`, {stdio: 'pipe'}).toString().trim();
+    return execGit({options: ['branch', '-D'], values: [branchName]}, {stdio: 'pipe'}).trim();
   }
   catch {
     throw new Error(`Can't delete branch ${branchName}`);
@@ -88,10 +95,6 @@ export const getTagsList = (): string[] => {
     .split('\n')
     .filter(Boolean)
     .toReversed();
-};
-
-export const createAndPushTag = (tagName: string): void => {
-  execSync(`git tag ${tagName} && git push origin ${tagName}`).toString();
 };
 
 export const updateSubmodules = (): void => {
@@ -139,7 +142,7 @@ export const rebaseLocaleBranch = ({branchName, willDisplayInformation = true}: 
   };
 
   try {
-    execSync(`git rebase origin/${branchName}`, outputOptions).toString();
+    execGit({options: ['rebase'], values: [`origin/${branchName}`]}, outputOptions);
   }
   catch {
     errors.conflict = true;
