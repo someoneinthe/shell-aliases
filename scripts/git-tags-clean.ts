@@ -44,47 +44,29 @@ const orderTags = (tagsList: string[]) => {
 
 const removeTagsWithBatch = (tagsList: string[], batchSize = 10) => {
   // proceed deletion only if necessary
-  if (tagsList.length) {
-    const tagsToRemoveBatches: string[][] = [];
-    let currentBatchTagsLists: string[] = [];
-
-    // tagsList is split in batches
-    tagsList.forEach((tagName, index) => {
-      // push current tags into batch
-      currentBatchTagsLists.push(tagName);
-
-      // batch size limit: start a new batch
-      if ((index + 1) % batchSize === 0) {
-        // push currentBatch
-        tagsToRemoveBatches.push(currentBatchTagsLists);
-
-        // reset currentBatch
-        currentBatchTagsLists = [];
-      }
-    });
-
-    // push last incomplete batch
-    if (currentBatchTagsLists.length) {
-      tagsToRemoveBatches.push(currentBatchTagsLists);
-    }
-
-    // proceed deletion
-    tagsToRemoveBatches.forEach((batch, index) => {
-      console.info(`Removing batch ${index + 1} of ${tagsToRemoveBatches.length}...`);
-
-      // Remote deletion
-      execGit({options: ['push', 'origin'], values: batch.map(tagName => `:refs/tags/${tagName}`)});
-
-      // Local deletion
-      execGit({options: ['tag', '-d'], values: batch});
-    });
-
-    console.info(colorize(`✅  Clean finished, removed ${tagsList.length} tags in ${tagsToRemoveBatches.length} batches of ${batchSize}`, ColorKeys.GREEN));
-  }
-  else {
+  if (!tagsList.length) {
     console.info(colorize('❗️ Nothing to clean', ColorKeys.GREEN));
     process.exit(0);
   }
+
+  // tagsList is split in batches
+  const tagsToRemoveBatches: string[][] = [];
+  for (let index = 0; index < tagsList.length; index += batchSize) {
+    tagsToRemoveBatches.push(tagsList.slice(index, index + batchSize));
+  }
+
+  // proceed deletion
+  tagsToRemoveBatches.forEach((batch, index) => {
+    console.info(`Removing batch ${index + 1} of ${tagsToRemoveBatches.length}...`);
+
+    // Remote deletion
+    execGit({options: ['push', 'origin'], values: batch.map(tagName => `:refs/tags/${tagName}`)});
+
+    // Local deletion
+    execGit({options: ['tag', '-d'], values: batch});
+  });
+
+  console.info(colorize(`✅  Clean finished, removed ${tagsList.length} tags in ${tagsToRemoveBatches.length} batches of ${batchSize}`, ColorKeys.GREEN));
 };
 
 const orderedTags = orderTags(getTagsList());

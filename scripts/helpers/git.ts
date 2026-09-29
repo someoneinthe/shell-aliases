@@ -109,10 +109,7 @@ export const updateSubmodules = (): void => {
 export const getSubmodulePaths = (): string[] => {
   try {
     const output = execSync('git submodule foreach --recursive --quiet pwd').toString().trim();
-    if (!output) {
-      return [];
-    }
-    return output.split('\n').map(line => line.trim()).filter(Boolean);
+    return output ? output.split('\n').map(line => line.trim()).filter(Boolean) : [];
   }
   catch {
     return [];
