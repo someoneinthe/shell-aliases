@@ -24,23 +24,24 @@ if (!willSwitch) {
   process.exit(0);
 }
 
-const orderTags = (tagsList: string[]) => tagsList.reduce((accumulator: {
-  otherTags: string[];
-  versionTags: string[];
-}, currentTag) => {
-  const isVersionTag = gitSemVersionTagFormat.test(currentTag);
+const orderTags = (tagsList: string[]) => {
+  const orderedTags: {otherTags: string[]; versionTags: string[]} = {
+    otherTags: [],
+    versionTags: [],
+  };
 
-  if (!isVersionTag) {
-    console.log(currentTag);
+  for (const currentTag of tagsList) {
+    const isVersionTag = gitSemVersionTagFormat.test(currentTag);
+
+    if (!isVersionTag) {
+      console.log(currentTag);
+    }
+
+    orderedTags[isVersionTag ? 'versionTags' : 'otherTags'].push(currentTag);
   }
 
-  accumulator[isVersionTag ? 'versionTags' : 'otherTags'].push(currentTag);
-
-  return accumulator;
-}, {
-  otherTags: [],
-  versionTags: [],
-});
+  return orderedTags;
+};
 
 const removeTagsWithBatch = (tagsList: string[], batchSize = 10) => {
   // proceed deletion only if necessary
