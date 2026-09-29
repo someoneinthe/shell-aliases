@@ -62,6 +62,15 @@ export const getLocalBranchesList = (willKeepAllBranches = true): string[] => {
   }
 };
 
+export const deleteLocalBranch = (branchName: string): string => {
+  try {
+    return execSync(`git branch -D ${branchName}`, {stdio: 'pipe'}).toString().trim();
+  }
+  catch {
+    throw new Error(`Can't delete branch ${branchName}`);
+  }
+};
+
 export const getCurrentBranchName = (): string => {
   try {
     return execSync('git rev-parse --abbrev-ref HEAD').toString().trim();
