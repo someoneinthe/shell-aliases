@@ -1,4 +1,4 @@
-import {execFileSync, execSync, ExecSyncOptionsWithStringEncoding} from 'node:child_process';
+import {execFileSync, ExecFileSyncOptions, execSync, ExecSyncOptionsWithStringEncoding} from 'node:child_process';
 import {existsSync, readFileSync, statSync} from 'node:fs';
 import path from 'node:path';
 import {colorize, ColorKeys} from './shell-colors';
@@ -7,13 +7,11 @@ import {colorize, ColorKeys} from './shell-colors';
 export const gitSemVersionTagFormat = /^(([a-z-]+-)|v)?(?:\d{1,4}\.){2}\d{1,2}[a-z]?$/;
 
 /**
- * @description Reject a git reference coming from user input if it could be interpreted as a git option
+ * @description Run a git command without a shell. Values that may come from user input must be passed in `values`:
+ * they are placed after `--end-of-options`, so git never parses them as options.
+ * 'git' is resolved from the user's PATH on purpose: these scripts are local CLI helpers run by the user in their own shell.
  */
-const assertSafeReference = (reference: string): void => {
-  if (!reference || reference.startsWith('-')) {
-    throw new Error(`Invalid git reference: '${reference}'`);
-  }
-};
+export const execGit = ({options = [], values = []}: {options?: string[]; values?: string[]}, execOptions: ExecFileSyncOptions = {}): string => execFileSync('git', [...options, '--end-of-options', ...values], execOptions).toString(); // NOSONAR
 
 export const fetchBranches = (): void => {
   try {
@@ -44,11 +42,10 @@ export const getUncommittedFilesList = (): string[] => execSync('git status').to
   .map(line => line.trim().replaceAll('\t', ''));
 
 export const switchLocalBranch = (branchToSwitch: string): void => {
-  assertSafeReference(branchToSwitch);
   fetchBranches();
 
   try {
-    execFileSync('git', ['switch', branchToSwitch]);
+    execGit({options: ['switch'], values: [branchToSwitch]});
   }
   catch {
     throw new Error(`Can't switch to branch ${branchToSwitch}, maybe you should stash your work first`);
@@ -73,10 +70,8 @@ export const getLocalBranchesList = (willKeepAllBranches = true): string[] => {
 };
 
 export const deleteLocalBranch = (branchName: string): string => {
-  assertSafeReference(branchName);
-
   try {
-    return execFileSync('git', ['branch', '-D', branchName], {stdio: 'pipe'}).toString().trim();
+    return execGit({options: ['branch', '-D'], values: [branchName]}, {stdio: 'pipe'}).trim();
   }
   catch {
     throw new Error(`Can't delete branch ${branchName}`);
@@ -147,8 +142,7 @@ export const rebaseLocaleBranch = ({branchName, willDisplayInformation = true}: 
   };
 
   try {
-    assertSafeReference(branchName);
-    execFileSync('git', ['rebase', `origin/${branchName}`], outputOptions);
+    execGit({options: ['rebase'], values: [`origin/${branchName}`]}, outputOptions);
   }
   catch {
     errors.conflict = true;

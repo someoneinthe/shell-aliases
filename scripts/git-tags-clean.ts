@@ -1,7 +1,6 @@
-import {execFileSync} from 'node:child_process';
 import prompts from 'prompts';
 import {copyToClipboard} from './helpers/clipboard';
-import {getTagsList, gitSemVersionTagFormat} from './helpers/git';
+import {execGit, getTagsList, gitSemVersionTagFormat} from './helpers/git';
 import {colorize, ColorKeys} from './helpers/shell-colors';
 
 const [, , dryMode] = process.argv;
@@ -74,10 +73,10 @@ const removeTagsWithBatch = (tagsList: string[], batchSize = 10) => {
       console.info(`Removing batch ${index + 1} of ${tagsToRemoveBatches.length}...`);
 
       // Remote deletion
-      execFileSync('git', ['push', 'origin', ...batch.map(tagName => `:refs/tags/${tagName}`)]);
+      execGit({options: ['push', 'origin'], values: batch.map(tagName => `:refs/tags/${tagName}`)});
 
       // Local deletion
-      execFileSync('git', ['tag', '-d', ...batch]);
+      execGit({options: ['tag', '-d'], values: batch});
     });
 
     console.info(colorize(`✅  Clean finished, removed ${tagsList.length} tags in ${tagsToRemoveBatches.length} batches of ${batchSize}`, ColorKeys.GREEN));
