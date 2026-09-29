@@ -19,7 +19,7 @@ const shellColors: Record<ColorKeys, string> = {
   [ColorKeys.YELLOW]: '\u{1B}[0;33m',
 };
 
-const isColorKey = (key: string): key is ColorKeys => Object.values(ColorKeys).includes(key as ColorKeys);
+const isColorKey = (key: string): key is ColorKeys => (Object.values(ColorKeys) as string[]).includes(key);
 
 /**
  * @description Output shell data with given color
