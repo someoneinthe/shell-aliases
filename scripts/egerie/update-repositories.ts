@@ -1,4 +1,4 @@
-import {existsSync, readdirSync} from 'node:fs';
+import {existsSync} from 'node:fs';
 import path from 'node:path';
 import prompts from 'prompts';
 import {
@@ -6,44 +6,17 @@ import {
   getCurrentBranchName,
   getLocalBranchesList,
   getUncommittedFilesList,
-  isWorktree,
   rebaseLocaleBranch,
   switchLocalBranch,
   updateSubmodules,
 } from '../helpers/git';
 import {colorize, ColorKeys} from '../helpers/shell-colors';
-
-const BASE_REPO = 'unified-dev-stack';
-
-// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-const workspacePath = path.resolve(process.env.WORKSPACE!);
-const baseRepositoryPath = path.resolve(workspacePath, BASE_REPO);
-
-const repositoriesList: string[] = [];
-
-const getSubRepoList = (currentPath: string) => {
-  const subRepoList = readdirSync(currentPath, {withFileTypes: true})
-    // keep only not hidden folders
-    .filter(fileOrDirectory => !fileOrDirectory.name.startsWith('.') && fileOrDirectory.isDirectory())
-    .map(({name}) => name)
-    // keep if it's a git repository
-    .filter(directory => existsSync(path.resolve(currentPath, directory, '.git')))
-    // add full path
-    .map(directory => path.resolve(currentPath, directory))
-    // worktrees are updated through their main repository => ignore
-    .filter(directory => !isWorktree(directory));
-
-  repositoriesList.push(...subRepoList);
-};
-
-getSubRepoList(baseRepositoryPath);
-getSubRepoList(workspacePath);
+import {getRepositoryName, getWorkspaceRepositoriesList} from './helpers/repositories';
 
 const errors: {message: string; repository: string}[] = [];
 
 const processRepository = async (repository: string): Promise<void> => {
-  // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-  const repositoryName = repository.split('/').at(-1)!;
+  const repositoryName = getRepositoryName(repository);
   console.info(`${colorize('Processing', ColorKeys.GREEN)} ${colorize(repositoryName, ColorKeys.YELLOW)}`);
 
   process.chdir(repository);
@@ -90,7 +63,7 @@ const processRepository = async (repository: string): Promise<void> => {
   }
 };
 
-for (const repository of repositoriesList) {
+for (const repository of getWorkspaceRepositoriesList()) {
   await processRepository(repository);
 }
 
